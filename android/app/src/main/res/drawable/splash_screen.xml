@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/background" /> <!-- Change to your desired background color -->
+    <item>
+        <bitmap
+            android:gravity="center"
+            android:src="@drawable/splash" /> <!-- Replace with your splash image -->
+    </item>
+
+    <item android:bottom="80dp">
+        <bitmap
+            android:gravity="bottom"
+            android:src="@drawable/branding"
+            android:tileMode="disabled"
+            android:scaleType="fitXY"
+            android:viewportHeight="100"
+            android:viewportWidth="100"/>
+    </item>
+</layer-list>
