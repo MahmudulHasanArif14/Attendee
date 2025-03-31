@@ -1,8 +1,6 @@
-import 'package:attendee/helper_functions/helper_func.dart';
-import 'package:attendee/pages/splash_screen.dart';
+import 'package:attendee/pages/registration_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:intl_phone_field/intl_phone_field.dart';
 
 import '../widgets/custom_form_textfield.dart';
 import '../widgets/custom_text.dart';
@@ -413,7 +411,7 @@ class _LoginPageState extends State<LoginPage> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => Splashscreen(),
+                                builder: (context) => RegistrationPage(),
                               ),
                             );
                           },
