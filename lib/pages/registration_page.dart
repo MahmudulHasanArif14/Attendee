@@ -1,5 +1,6 @@
 import 'package:attendee/auth/auth_helper.dart';
 import 'package:attendee/widgets/custom_form_textfield.dart';
+import 'package:attendee/widgets/custom_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 
@@ -376,23 +377,16 @@ class _RegistrationPageState extends State<RegistrationPage> {
                               isChecked = value!;
 
                               if (isChecked) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text("Agreement Accepted"),
-                                    duration: Duration(milliseconds: 600),
-                                    backgroundColor: Colors.blue.shade50,
-                                    behavior: SnackBarBehavior.floating,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    margin: EdgeInsets.all(15),
-                                    padding: EdgeInsets.all(16),
-                                    elevation: 6,
-                                    dismissDirection:
-                                        DismissDirection.horizontal,
-                                  ),
+
+                                CustomSnackbar.show(
+                                  context: context,
+                                  title: "Error",
+                                  label: "Something went wrong!",
                                 );
+
+
                               }
+
                             });
                           },
 
