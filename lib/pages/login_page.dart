@@ -2,11 +2,13 @@ import 'package:attendee/pages/registration_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../auth/auth_helper.dart';
 import '../widgets/custom_form_textfield.dart';
 import '../widgets/custom_text.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+  final String? errorMessage;
+  const LoginPage({super.key, this.errorMessage});
   @override
   State<LoginPage> createState() => _LoginPageState();
 }
@@ -14,6 +16,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController emailTextController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final AuthHelper _authHelper = AuthHelper();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>(); // Form Key
   bool _obscureText = true;
   bool isEmailValid = false;
@@ -33,6 +36,12 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
   }
 
+  void _loginUser() {
+    String email = emailTextController.text.trim();
+    String password = passwordController.text.trim();
+
+    _authHelper.logIn(context, email, password);
+  }
 
 
 
@@ -307,6 +316,7 @@ class _LoginPageState extends State<LoginPage> {
                           final email=emailTextController.text.toString();
                           final pass=passwordController.text.toString();
                           print(email + pass);
+                          _loginUser();
 
                         }
                       },

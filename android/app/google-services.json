@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1086961716031",
+    "project_id": "attendee-cedc2",
+    "storage_bucket": "attendee-cedc2.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1086961716031:android:2d86cae4185db244b9218a",
+        "android_client_info": {
+          "package_name": "com.example.attendee"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCQOtXEbH62IDkAmrX-bmjTRzakXGlu370"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

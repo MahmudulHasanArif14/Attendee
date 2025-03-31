@@ -1,3 +1,4 @@
+import 'package:attendee/auth/auth_helper.dart';
 import 'package:attendee/widgets/custom_form_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
@@ -6,7 +7,8 @@ import '../widgets/custom_text.dart';
 import 'login_page.dart';
 
 class RegistrationPage extends StatefulWidget {
-  const RegistrationPage({super.key});
+  final String? errorMessage;
+  const RegistrationPage({super.key, this.errorMessage});
   @override
   State<RegistrationPage> createState() => _RegistrationPageState();
 }
@@ -19,6 +21,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
       TextEditingController();
   final TextEditingController phoneTextController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>(); // Form Key
+
 
   // Status Variables
   bool _isSubmitted = false;
@@ -67,6 +70,20 @@ class _RegistrationPageState extends State<RegistrationPage> {
     });
   }
 
+  final AuthHelper _authHelper = AuthHelper();
+
+  void _registerUser() async {
+    String email = emailTextController.text.trim();
+    String password = passwordController.text.trim();
+
+    if (email.isNotEmpty && password.isNotEmpty) {
+      await _authHelper.signUp(email, password,context);
+    } else {
+      print("Please enter email and password");
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
     final double screenHeight = MediaQuery.of(context).size.height;
@@ -92,6 +109,11 @@ class _RegistrationPageState extends State<RegistrationPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    if (widget.errorMessage != null) // Show error message if available
+                      Text(
+                        widget.errorMessage!,
+                        style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+                      ),
                     const SizedBox(height: 10),
                     /*Logo*/
                     SizedBox(
@@ -418,6 +440,8 @@ class _RegistrationPageState extends State<RegistrationPage> {
                                     final pass =
                                         passwordController.text.toString();
                                     print(email + pass);
+
+                                    _registerUser();
                                   }
                                 }
                                 : null,
