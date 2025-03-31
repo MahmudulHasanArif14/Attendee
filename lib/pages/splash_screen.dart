@@ -1,3 +1,4 @@
+import 'package:attendee/pages/login_page.dart';
 import 'package:attendee/widgets/error_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -18,6 +19,7 @@ class SplashscreenState extends State<Splashscreen> {
     _navigateToLoginPage();
   }
 
+  // Set The color Of the System Ui Time and Clock to be visible while splash screen occurs
   void _setSystemUI() {
     SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(
@@ -36,9 +38,10 @@ class SplashscreenState extends State<Splashscreen> {
       context,
       PageRouteBuilder(
         pageBuilder:
-            (context, animation, secondaryAnimation) => const ErrorScreen(errorMessage: "Opps! Something Went Wrong"),
+            (context, animation, secondaryAnimation) => LoginPage(),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          return FadeTransition(opacity: animation, child: child);
+          return FadeTransition(opacity: animation.drive(Tween(begin: 0.0,end:1.0).chain(CurveTween(curve:Curves.bounceIn))),
+              child: child);
         },
       ),
     );
@@ -75,7 +78,7 @@ class SplashscreenState extends State<Splashscreen> {
               Icon(Icons.fingerprint, size: iconSize, color: Colors.white),
               const SizedBox(height: 20),
               const Text(
-                'Attende',
+                'Attendee',
                 style: TextStyle(
                   fontSize: 30,
                   fontWeight: FontWeight.bold,
