@@ -5,46 +5,57 @@ class CustomSnackbar {
   static void show({
     required BuildContext context,
     required String label,
-    String? title,
-    double height = 80,
+    String? title="Aw, Snap!",
     double padding = 16,
     double radius = 20,
+    Color color=const Color(0xFFC72C41),
+    Color svgColor=const Color(0xFFDF4F62),
   }) {
+
+
+
+    // Hide Keyboard If Appear on the Screen
+    WidgetsBinding.instance.addPostFrameCallback((_){
+      FocusScope.of(context).unfocus();
+    });
+
+
     final snackBar = SnackBar(
+      dismissDirection:DismissDirection.horizontal,
       content: Stack(
         clipBehavior: Clip.none,
         children: [
-          Container(
-            padding: EdgeInsets.all(padding),
-            height: height,
-            decoration: BoxDecoration(
-              color: Color(0xFFC72C41), // Red Color
-              borderRadius: BorderRadius.circular(radius),
-            ),
-            child: Row(
-              children: [
-                const SizedBox(width: 48),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min, // Keeps column compact
-                    children: [
-                      if (title != null)
+          IntrinsicHeight(
+            child: Container(
+              padding: EdgeInsets.all(padding),
+              decoration: BoxDecoration(
+                color: color,
+                borderRadius: BorderRadius.circular(radius),
+              ),
+              child: Row(
+                children: [
+                  const SizedBox(width: 48),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (title != null)
+                          Text(
+                            title,
+                            style: const TextStyle(fontSize: 18, color: Colors.white,fontWeight: FontWeight.bold),
+                          ),
                         Text(
-                          title,
-                          style: const TextStyle(fontSize: 18, color: Colors.white),
+                          label,
+                          style: const TextStyle(fontSize: 12, color: Colors.white),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
                         ),
-                      Spacer(),
-                      Text(
-                        label,
-                        style: const TextStyle(fontSize: 12, color: Colors.white),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
 
@@ -59,7 +70,7 @@ class CustomSnackbar {
                 "assets/images/bubbles.svg",
                 height: 48,
                 width: 40,
-                color: Colors.red.shade500,
+                colorFilter: ColorFilter.mode(svgColor, BlendMode.srcIn),
               ),
             ),
           ),
@@ -76,6 +87,8 @@ class CustomSnackbar {
                   alignment: Alignment.center,
                   children:[
                     SvgPicture.asset("assets/images/back.svg",
+
+                      colorFilter: ColorFilter.mode(svgColor, BlendMode.srcIn),
                     height: 40,
                   ),
 
@@ -98,7 +111,7 @@ class CustomSnackbar {
       behavior: SnackBarBehavior.floating,
       backgroundColor: Colors.transparent,
       elevation: 0.0,
-      duration: const Duration(seconds:3),
+      duration: const Duration(seconds:5),
     );
 
     // Show Snackbar

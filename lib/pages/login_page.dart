@@ -313,9 +313,6 @@ class _LoginPageState extends State<LoginPage> {
                         // Add login logic here
                         if (_formKey.currentState!.validate()) {
                           // Perform login
-                          final email=emailTextController.text.toString();
-                          final pass=passwordController.text.toString();
-                          print(email + pass);
                           _loginUser();
 
                         }
@@ -372,6 +369,9 @@ class _LoginPageState extends State<LoginPage> {
                     child: OutlinedButton(
                       onPressed: () {
                         // print("Google login");
+
+                        AuthHelper().loginWithGoogle(context);
+
                       },
                       style: OutlinedButton.styleFrom(
                         padding: const EdgeInsets.all(15),
@@ -412,7 +412,7 @@ class _LoginPageState extends State<LoginPage> {
                         Text(
                           "Didn't have an account? ",
                           style: TextStyle(
-                            fontSize: 12,
+                            fontSize: 13,
                             color: Color(0xFFACAFB5),
                           ),
                         ),
@@ -434,7 +434,8 @@ class _LoginPageState extends State<LoginPage> {
                             'Register',
                             style: TextStyle(
                               color: Color(0xFF3085FE), // Blue color
-                              fontSize: 12,
+                              fontSize: 14,
+                              fontWeight:FontWeight.bold,
                             ),
                           ),
                         ),
