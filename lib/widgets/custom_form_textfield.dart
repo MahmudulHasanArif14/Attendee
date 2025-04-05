@@ -9,6 +9,7 @@ class CustomFormTextField extends StatelessWidget {
   final String? Function(String?)? validator;
   final void Function(String)? onChanged;
   final dynamic obscureText;
+  final Widget? prefix,prefixIcon;
 
 
 
@@ -20,7 +21,8 @@ class CustomFormTextField extends StatelessWidget {
     this.suffixIcon,
     this.hintText, this.validator, this.onChanged,
     this.obscureText=false,
-    this.suffix,
+    this.suffix, this.prefix,
+    this.prefixIcon,
   });
 
   @override
@@ -32,6 +34,8 @@ class CustomFormTextField extends StatelessWidget {
       decoration: InputDecoration(
         labelText: labelText,
         labelStyle: TextStyle(color: Colors.grey.shade600),
+        prefix: prefix,
+        prefixIcon: prefixIcon,
         suffixIcon: suffixIcon,
         suffix: suffix,
         hintText: hintText,

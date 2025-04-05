@@ -30,7 +30,7 @@ class SplashscreenState extends State<Splashscreen> {
 
   // Navigating to Login Page
   void _navigateToLoginPage() async {
-    await Future.delayed(const Duration(seconds: 3));
+    await Future.delayed(const Duration(seconds: 1));
     if (!mounted) return; // Ensure widget is still active before navigating
 
     Navigator.pushReplacement(

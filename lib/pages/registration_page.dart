@@ -5,7 +5,8 @@
   import 'package:intl_phone_field/intl_phone_field.dart';
 
   import '../widgets/custom_text.dart';
-  import 'login_page.dart';
+  import 'legal_page.dart';
+import 'login_page.dart';
 
   class RegistrationPage extends StatefulWidget {
     final String? errorMessage;
@@ -413,7 +414,15 @@
                             ),
                             TextButton(
                               onPressed: () {
-                                //   Term Condition Page Here
+
+
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => LegalScreen(
+                                    ),
+                                  ),
+                                );
                               },
                               child: Expanded(
                                 child: Text(
@@ -554,6 +563,8 @@
                             ),
                             TextButton(
                               onPressed: () {
+
+
                                 Navigator.pushAndRemoveUntil(
                                   context,
                                   MaterialPageRoute(

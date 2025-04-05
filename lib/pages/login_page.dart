@@ -1,3 +1,4 @@
+
 import 'package:attendee/pages/registration_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -5,6 +6,7 @@ import 'package:flutter/services.dart';
 import '../auth/auth_helper.dart';
 import '../widgets/custom_form_textfield.dart';
 import '../widgets/custom_text.dart';
+import 'forgot_page.dart';
 
 class LoginPage extends StatefulWidget {
   final String? errorMessage;
@@ -22,12 +24,16 @@ class _LoginPageState extends State<LoginPage> {
   bool isEmailValid = false;
   bool _isSubmitted = false;
 
+
+  // initState Starting Widget
   @override
   void initState() {
     super.initState();
     emailTextController.addListener(validateEmail);
   }
 
+
+  // On widget Close
   @override
   void dispose() {
     emailTextController.removeListener(validateEmail);
@@ -36,10 +42,11 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
   }
 
+
+  // Login Functionality
   void _loginUser() {
     String email = emailTextController.text.trim();
     String password = passwordController.text.trim();
-
     _authHelper.logIn(context, email, password);
   }
 
@@ -60,6 +67,8 @@ class _LoginPageState extends State<LoginPage> {
 
 
 
+
+  // Widgets
   @override
   Widget build(BuildContext context) {
     final double screenHeight = MediaQuery.of(context).size.height;
@@ -211,6 +220,8 @@ class _LoginPageState extends State<LoginPage> {
 
 
                   // Email Text Field
+
+                  // Email Field
                   CustomFormTextField(
                     textController: emailTextController,
                     textKeyboardType: TextInputType.emailAddress,
@@ -286,7 +297,15 @@ class _LoginPageState extends State<LoginPage> {
                     alignment: Alignment.centerRight,
                     child: TextButton(
                       onPressed: () {
-                        //Code goes here
+                        //Forgot Page goes here
+
+
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => ForgotPage()),
+                        );
+
+
                       },
                       style: TextButton.styleFrom(
                         splashFactory: NoSplash.splashFactory,
@@ -418,6 +437,7 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                         TextButton(
                           onPressed: () {
+
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -427,7 +447,6 @@ class _LoginPageState extends State<LoginPage> {
                           },
                           style: TextButton.styleFrom(
                             padding: EdgeInsets.zero,
-                            minimumSize: Size(0, 0),
                             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                           ),
                           child: const Text(

@@ -59,7 +59,7 @@ class CustomSnackbar {
             ),
           ),
 
-          // SVG Image Positioned at Bottom
+
           Positioned(
             bottom: 0,
             child: ClipRRect(
@@ -117,4 +117,10 @@ class CustomSnackbar {
     // Show Snackbar
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
+
+  // static void hideSnackBar(BuildContext context) {
+  //   ScaffoldMessenger.of(context).hideCurrentSnackBar();
+  // }
+
+
 }
