@@ -3,6 +3,7 @@ import 'package:attendee/pages/settings.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'chat_page.dart';
 import 'home_page.dart';
 
@@ -29,8 +30,21 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+
+    SystemChrome.setSystemUIOverlayStyle(
+      SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness:  Brightness.light,
+        statusBarBrightness:  Brightness.light,
+      ),
+    );
+
+
+
     user = widget.user;
     screens = <Widget>[Dashboard(user: user), ProfilePage(),ChatPage(),SettingPage()];
+
+
   }
 
   @override
