@@ -11,11 +11,14 @@ class Splashscreen extends StatefulWidget {
 }
 
 class SplashscreenState extends State<Splashscreen> {
+
+
   @override
   void initState() {
     super.initState();
     _setSystemUI();
     _navigateToLoginPage();
+
   }
 
   // Set The color Of the System Ui Time and Clock to be visible while splash screen occurs

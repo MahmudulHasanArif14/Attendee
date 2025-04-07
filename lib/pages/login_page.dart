@@ -2,7 +2,6 @@
 import 'package:attendee/pages/registration_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
 import '../auth/auth_helper.dart';
 import '../widgets/custom_form_textfield.dart';
 import '../widgets/custom_text.dart';
@@ -296,7 +295,7 @@ class _LoginPageState extends State<LoginPage> {
                   Align(
                     alignment: Alignment.centerRight,
                     child: TextButton(
-                      onPressed: () {
+                      onPressed: () async{
                         //Forgot Page goes here
 
 

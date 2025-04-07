@@ -98,7 +98,7 @@ class _VerificationPageState extends State<VerificationPage> {
           var user = FirebaseAuth.instance.currentUser;
           if (user != null && user.emailVerified) {
             timer.cancel();
-            if (context.mounted) {
+            if (mounted) {
               CustomAlertBox().showCustomAnimatedAlert(
                 context: context,
                 title: "🎉 Congratulations $lastName",
