@@ -1,12 +1,17 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 
 class FcmService{
 
   static void init(){
 
     FirebaseMessaging.onMessage.listen((msg){
-      print(msg.notification?.title);
-      print(msg.notification?.body);
+      if (kDebugMode) {
+        print(msg.notification?.title);
+      }
+      if (kDebugMode) {
+        print(msg.notification?.body);
+      }
     });
 
 

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:supabase_flutter/supabase_flutter.dart' as supabase;
 import 'package:url_launcher/url_launcher.dart';
 
 class LegalScreen extends StatelessWidget {
@@ -73,6 +75,11 @@ class LegalScreen extends StatelessWidget {
                       _bulletPoint("You are responsible for maintaining the confidentiality of your account credentials."),
 
                       _normalText("\nBy using Attendee, you acknowledge that you have read, understood, and agreed to these Terms & Conditions.\n\n"),
+
+
+
+
+
                     ],
                   ),
                 ),
@@ -84,6 +91,43 @@ class LegalScreen extends StatelessWidget {
               Center(
                 child: Column(
                   children: [
+
+
+                    ElevatedButton(onPressed:() async {
+
+                      const webClientId = '1086961716031-h6c9n8tbunllqifs1ri12soo8kjmlo6j.apps.googleusercontent.com';
+                      const iosClientId = '1086961716031-9fgtutdctvskbrrdmlprgcqpc8cheiu7.apps.googleusercontent.com';
+
+
+                      final GoogleSignIn googleSignIn = GoogleSignIn(
+                        clientId: iosClientId,
+                        serverClientId: webClientId,
+                      );
+
+                      final googleUser = await googleSignIn.signIn();
+                      final googleAuth = await googleUser!.authentication;
+                      final accessToken = googleAuth.accessToken;
+                      final idToken = googleAuth.idToken;
+
+                      if (accessToken == null) {
+                        throw 'No Access Token found.';
+                      }
+                      if (idToken == null) {
+                        throw 'No ID Token found.';
+                      }
+                      await supabase.Supabase.instance.client.auth.signInWithIdToken(
+                        provider: supabase.OAuthProvider.google,
+                        idToken: idToken,
+                        accessToken: accessToken,
+                      );
+
+                    },
+                        child: Text("google")
+                    ),
+
+
+
+
                     Text(
                       "📩 Contact Us",
                       style: TextStyle(
