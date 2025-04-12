@@ -1,10 +1,10 @@
-  import 'package:attendee/auth/auth_helper.dart';
   import 'package:attendee/widgets/custom_form_textfield.dart';
   import 'package:attendee/widgets/custom_snackbar.dart';
   import 'package:flutter/material.dart';
   import 'package:intl_phone_field/intl_phone_field.dart';
 
-  import '../widgets/custom_text.dart';
+  import '../auth/supabase_auth.dart';
+import '../widgets/custom_text.dart';
   import 'legal_page.dart';
 import 'login_page.dart';
 
@@ -71,7 +71,7 @@ import 'login_page.dart';
       });
     }
 
-    final AuthHelper _authHelper = AuthHelper();
+    final OauthHelper _authHelper = OauthHelper();
 
     void _registerUser() async {
       String email = emailTextController.text.trim();
@@ -515,7 +515,7 @@ import 'login_page.dart';
                         child: OutlinedButton(
                           onPressed: () {
                             // print("Google login");
-                            AuthHelper().loginWithGoogle(context);
+                            _authHelper.loginWithGoogle(context);
                           },
                           style: OutlinedButton.styleFrom(
                             padding: const EdgeInsets.all(15),

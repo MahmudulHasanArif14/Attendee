@@ -60,6 +60,8 @@ dependencies:
   supabase_flutter: ^2.8.4
   dotenv: ^4.2.0
   flutter_dotenv: ^5.2.1
+  uri: ^1.0.0
+
 
 dev_dependencies:
   flutter_test:

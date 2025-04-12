@@ -1,9 +1,9 @@
 import 'package:attendee/pages/profile.dart';
 import 'package:attendee/pages/settings.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'chat_page.dart';
 import 'home_page.dart';
 

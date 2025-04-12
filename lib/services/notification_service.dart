@@ -15,9 +15,13 @@ class NotificationServices {
   Future<void> initNotificationService(BuildContext context) async {
     await Firebase.initializeApp();
     await requestUserPermission();
-    await localNotificationInit(context);
-    firebaseInit(context);
-    messageInteract(context);
+    if(context.mounted){
+      await localNotificationInit(context);
+    }
+    if(context.mounted){
+      firebaseInit(context);
+      messageInteract(context);
+    }
   }
 
   // Request user permissions
@@ -90,12 +94,16 @@ class NotificationServices {
   Future<void> messageInteract(BuildContext context) async {
     // When the app is opened from background state
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage msg) {
-      handleMsg(context, msg);
+
+      if(context.mounted){
+        handleMsg(context, msg);
+      }
+
     });
 
     // When the app is opened from terminated state
     FirebaseMessaging.instance.getInitialMessage().then((RemoteMessage? msg) {
-      if (msg != null && msg.data.isNotEmpty) {
+      if (msg != null && msg.data.isNotEmpty && context.mounted) {
         handleMsg(context, msg);
       }
     });

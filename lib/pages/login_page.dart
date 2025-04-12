@@ -2,7 +2,7 @@
 import 'package:attendee/pages/registration_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../auth/auth_helper.dart';
+import '../auth/supabase_auth.dart';
 import '../widgets/custom_form_textfield.dart';
 import '../widgets/custom_text.dart';
 import 'forgot_page.dart';
@@ -17,7 +17,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController emailTextController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final AuthHelper _authHelper = AuthHelper();
+  final OauthHelper _authHelper = OauthHelper();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>(); // Form Key
   bool _obscureText = true;
   bool isEmailValid = false;
@@ -29,6 +29,9 @@ class _LoginPageState extends State<LoginPage> {
   void initState() {
     super.initState();
     emailTextController.addListener(validateEmail);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      OauthHelper.configDeepLink(context);
+    });
   }
 
 
@@ -47,6 +50,7 @@ class _LoginPageState extends State<LoginPage> {
     String email = emailTextController.text.trim();
     String password = passwordController.text.trim();
     _authHelper.logIn(context, email, password);
+
   }
 
 
@@ -388,7 +392,7 @@ class _LoginPageState extends State<LoginPage> {
                       onPressed: () {
                         // print("Google login");
 
-                        AuthHelper().loginWithGoogle(context);
+                        _authHelper.loginWithGoogle(context);
 
                       },
                       style: OutlinedButton.styleFrom(

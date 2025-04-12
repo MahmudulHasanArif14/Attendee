@@ -1,7 +1,7 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_swipe_button/flutter_swipe_button.dart';
 import 'package:intl/intl.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../widgets/custom_attendance_card.dart';
 
@@ -112,7 +112,7 @@ class _DashboardState extends State<Dashboard> {
     // TODO: implement initState
     super.initState();
 
-    fullName = widget.user.displayName.toString().trim();
+    fullName = widget.user.userMetadata!['name'].toString().trim();
 
     // Wait until the widget is built before scrolling
     WidgetsBinding.instance.addPostFrameCallback((_) {

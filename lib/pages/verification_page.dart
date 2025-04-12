@@ -1,17 +1,18 @@
 import 'dart:async';
-import 'package:attendee/auth/auth_helper.dart';
+import 'package:attendee/auth/supabase_auth.dart';
 import 'package:attendee/pages/login_page.dart';
 import 'package:attendee/widgets/custom_alert_box.dart';
 import 'package:attendee/widgets/custom_snackbar.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class VerificationPage extends StatefulWidget {
   final User? user;
   final bool? isReset;
   final String? email;
-  const VerificationPage({super.key,  this.user, this.isReset=false,this.email});
+  const VerificationPage({super.key,  this.user, this.isReset,this.email});
   @override
   State<VerificationPage> createState() => _VerificationPageState();
 }
@@ -24,9 +25,10 @@ class _VerificationPageState extends State<VerificationPage> {
   int _resendTime = 0;
   Timer? _resendTimer;
 
+
   void resendLink() async {
     setState(() {
-      isSend = true;
+       isSend = true;
       _resendTime = 30;
     });
 
@@ -43,7 +45,14 @@ class _VerificationPageState extends State<VerificationPage> {
     });
 
     try {
-      await AuthHelper.sendVerificationEmail(context);
+
+        await OauthHelper.sendVerificationEmail(context);
+
+      if (kDebugMode) {
+        print("Resend type: ${widget.isReset??false ? 'Password Reset' : 'Email Verification'}");
+      }
+
+
     } finally {
       setState(() {
         isSend = false;
@@ -70,8 +79,9 @@ class _VerificationPageState extends State<VerificationPage> {
 
 
     try{
-      final email = widget.email?.trim() ?? '';
-      AuthHelper().resetPassword(context: context, email: email);
+       email = widget.email?.trim() ?? '';
+
+      OauthHelper().resetPassword(context: context, email: email);
 
     }
     finally{
@@ -84,32 +94,58 @@ class _VerificationPageState extends State<VerificationPage> {
 
 
 
+
+
+
+
+
+
+
+
+
+
   @override
   void initState() {
     super.initState();
-    var fullName = widget.user?.displayName?.split(' ') ?? [""];
-    lastName = fullName.isNotEmpty ? fullName.last : "";
+     lastName = "";
+    final nameFromMeta = widget.user?.userMetadata?['name'];
     email = widget.user?.email ?? "";
 
-    if (!(widget.isReset!)) {
+    if (nameFromMeta != null && nameFromMeta is String && nameFromMeta.trim().isNotEmpty) {
+      lastName = nameFromMeta.trim().split(' ').last;
+    }
+
+    if (!(widget.isReset??false)) {
       _emailCheckTimer = Timer.periodic(Duration(seconds: 2), (timer) async {
-        if (FirebaseAuth.instance.currentUser != null) {
-          await FirebaseAuth.instance.currentUser?.reload();
-          var user = FirebaseAuth.instance.currentUser;
-          if (user != null && user.emailVerified) {
+        final session = Supabase.instance.client.auth.currentSession;
+        await Supabase.instance.client.auth.refreshSession();
+        final user = session?.user;
+
+        if (user != null) {
+
+          final updatedUserResponse = await Supabase.instance.client.auth.getUser();
+          final updatedUser = updatedUserResponse.user;
+
+          if (updatedUser != null && updatedUser.emailConfirmedAt != null) {
             timer.cancel();
             if (mounted) {
               CustomAlertBox().showCustomAnimatedAlert(
                 context: context,
                 title: "🎉 Congratulations $lastName",
                 label: "Your account is ready to use",
-                user: user,
+                user: updatedUser,
               );
             }
           }
         }
       });
     }
+
+
+
+
+
+
   }
 
   @override

@@ -1,4 +1,4 @@
-import 'package:attendee/auth/auth_helper.dart';
+import 'package:attendee/auth/supabase_auth.dart';
 import 'package:attendee/pages/verification_page.dart';
 import 'package:attendee/widgets/custom_form_textfield.dart';
 import 'package:flutter/material.dart';
@@ -28,10 +28,10 @@ class _ForgotPageState extends State<ForgotPage> {
   }
 
 
-  // Sending Reset Password Link
+  // // Sending Reset Password Link
   void resetPassword() {
     final email = emailController.text.toString().trim();
-    AuthHelper().resetPassword(context: context, email: email);
+    OauthHelper().resetPassword(context: context,email: email);
 
   }
 
