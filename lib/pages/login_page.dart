@@ -1,4 +1,3 @@
-
 import 'package:attendee/pages/registration_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -23,7 +22,6 @@ class _LoginPageState extends State<LoginPage> {
   bool isEmailValid = false;
   bool _isSubmitted = false;
 
-
   // initState Starting Widget
   @override
   void initState() {
@@ -34,7 +32,6 @@ class _LoginPageState extends State<LoginPage> {
     });
   }
 
-
   // On widget Close
   @override
   void dispose() {
@@ -44,16 +41,12 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
   }
 
-
   // Login Functionality
   void _loginUser() {
     String email = emailTextController.text.trim();
     String password = passwordController.text.trim();
     _authHelper.logIn(context, email, password);
-
   }
-
-
 
   // Email Validator
   void validateEmail() {
@@ -65,11 +58,6 @@ class _LoginPageState extends State<LoginPage> {
       isEmailValid = isValid;
     });
   }
-
-
-
-
-
 
   // Widgets
   @override
@@ -106,7 +94,6 @@ class _LoginPageState extends State<LoginPage> {
 
                   CustomText(text: 'Welcome back 👋'),
 
-
                   Row(
                     children: const [
                       CustomText(text: 'to '),
@@ -121,7 +108,6 @@ class _LoginPageState extends State<LoginPage> {
                   ),
 
                   const SizedBox(height: 15),
-
 
                   // /*Phone Number */
                   // IntlPhoneField(
@@ -218,9 +204,7 @@ class _LoginPageState extends State<LoginPage> {
                   //
                   // ),
 
-
-                   // Email Field
-
+                  // Email Field
 
                   // Email Text Field
 
@@ -239,7 +223,7 @@ class _LoginPageState extends State<LoginPage> {
                       if (value == null || value.isEmpty) {
                         return 'Please enter your Email';
                       }
-                      if(!isEmailValid){
+                      if (!isEmailValid) {
                         return 'Enter A Valid Email';
                       }
 
@@ -250,22 +234,18 @@ class _LoginPageState extends State<LoginPage> {
                       setState(() {
                         _isSubmitted = false;
                         _formKey.currentState!.validate();
-
                       });
                     },
-
                   ),
-
 
                   const SizedBox(height: 20),
 
-
                   // Password Text Field
                   CustomFormTextField(
-                      textController: passwordController,
-                      obscureText: _obscureText,
-                      labelText: 'Password',
-                      suffixIcon: IconButton(
+                    textController: passwordController,
+                    obscureText: _obscureText,
+                    labelText: 'Password',
+                    suffixIcon: IconButton(
                       onPressed: () {
                         setState(() => _obscureText = !_obscureText);
                       },
@@ -292,23 +272,19 @@ class _LoginPageState extends State<LoginPage> {
                     },
                   ),
 
-
                   const SizedBox(height: 10),
 
                   // Forgot Password Button
                   Align(
                     alignment: Alignment.centerRight,
                     child: TextButton(
-                      onPressed: () async{
+                      onPressed: () async {
                         //Forgot Page goes here
-
 
                         Navigator.push(
                           context,
                           MaterialPageRoute(builder: (context) => ForgotPage()),
                         );
-
-
                       },
                       style: TextButton.styleFrom(
                         splashFactory: NoSplash.splashFactory,
@@ -336,14 +312,16 @@ class _LoginPageState extends State<LoginPage> {
                         if (_formKey.currentState!.validate()) {
                           // Perform login
                           _loginUser();
-
                         }
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF3085FE),
                         padding: const EdgeInsets.all(15),
                       ),
-                      child: Text('Login', style: TextStyle(color: Colors.white)),
+                      child: Text(
+                        'Login',
+                        style: TextStyle(color: Colors.white),
+                      ),
                     ),
                   ),
 
@@ -393,7 +371,6 @@ class _LoginPageState extends State<LoginPage> {
                         // print("Google login");
 
                         _authHelper.loginWithGoogle(context);
-
                       },
                       style: OutlinedButton.styleFrom(
                         padding: const EdgeInsets.all(15),
@@ -415,9 +392,10 @@ class _LoginPageState extends State<LoginPage> {
                               fontWeight: FontWeight.w300,
                               fontSize: 17,
                               color:
-                              Theme.of(context).brightness == Brightness.dark
-                                  ? Colors.grey
-                                  : Colors.black,
+                                  Theme.of(context).brightness ==
+                                          Brightness.dark
+                                      ? Colors.grey
+                                      : Colors.black,
                             ),
                           ),
                         ],
@@ -440,7 +418,6 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                         TextButton(
                           onPressed: () {
-
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -457,7 +434,7 @@ class _LoginPageState extends State<LoginPage> {
                             style: TextStyle(
                               color: Color(0xFF3085FE), // Blue color
                               fontSize: 14,
-                              fontWeight:FontWeight.bold,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),

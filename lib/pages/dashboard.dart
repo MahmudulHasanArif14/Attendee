@@ -17,7 +17,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   late final User user;
   late List<Widget> screens;
-  int index = 2;
+  int index = 0;
 
   // Bottom Navigator bar icons
   List<Widget> items = <Widget>[
@@ -31,27 +31,28 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
 
-    SystemChrome.setSystemUIOverlayStyle(
-      SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-        statusBarIconBrightness:  Brightness.light,
-        statusBarBrightness:  Brightness.light,
-      ),
-    );
-
-
-
     user = widget.user;
-    screens = <Widget>[Dashboard(user: user), ProfilePage(),ChatPage(),SettingPage()];
-
-
+    screens = <Widget>[
+      Dashboard(user: user),
+      ProfilePage(),
+      ChatPage(),
+      SettingPage(user: user),
+    ];
   }
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(
+      SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.light,
+        statusBarBrightness: Brightness.light,
+      ),
+    );
     return SafeArea(
       child: ClipRect(
         child: Scaffold(
+          appBar: AppBar(automaticallyImplyLeading: false, toolbarHeight: 0.0),
           body: screens[index],
           bottomNavigationBar: CurvedNavigationBar(
             height: 65,
