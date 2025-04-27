@@ -1,10 +1,13 @@
+import 'package:attendee/auth/supabase_auth.dart';
+import 'package:attendee/pages/privacy_policy.dart';
 import 'package:attendee/pages/profile.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../provider/profile_image_provider.dart';
 import '../provider/theme_provider.dart';
+import 'legal_page.dart';
+import 'login_page.dart';
 
 class SettingPage extends StatefulWidget {
   final User user;
@@ -17,214 +20,254 @@ class SettingPage extends StatefulWidget {
 class _SettingPageState extends State<SettingPage> {
   late final User userInfo;
   late final String fullName;
+  bool isDark = true;
 
   @override
   void initState() {
     super.initState();
 
     userInfo = widget.user;
-    fullName = userInfo.userMetadata!['name'].toString().trim();
+    fullName = (userInfo.userMetadata?['name'] ?? 'David').toString().trim();
   }
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final isWide = constraints.maxWidth > 600;
-        return Scaffold(
-          appBar: AppBar(automaticallyImplyLeading: false, toolbarHeight: 0.0),
-          body: Center(
-            child: Container(
-              width: isWide ? 500 : double.infinity,
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Column(
-                children: [
-                  Consumer<ProfileImageProvider>(
-                    builder: (ctx, profileProvider, child) {
-                      final imageUrl = profileProvider.imageUrl;
-                      final isLoading = profileProvider.isUploading;
+    final height=MediaQuery.of(context).size.height;
 
-                      ImageProvider imageProvider;
-                      if (profileProvider.cachedImageBytes != null) {
-                        imageProvider = MemoryImage(
-                          profileProvider.cachedImageBytes!,
-                        );
-                      } else if (imageUrl != null) {
-                        imageProvider = NetworkImage(imageUrl);
-                      } else {
-                        imageProvider = const AssetImage(
-                          "assets/images/avatar.png",
-                        );
-                      }
-
-                      return Column(
-                        children: [
-                          const SizedBox(height: 18),
-                          GestureDetector(
-                            onTap:
-                                () => profileProvider.pickAndUploadImage(ctx),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Stack(
-                                  alignment: Alignment.center,
-                                  children: [
-                                    Hero(
-                                      tag: 'profile-image-hero',
-                                      child: CircleAvatar(
-                                        radius: 70,
-                                        backgroundImage: imageProvider,
+    return SafeArea(
+      child: Scaffold(
+        body: Center(
+          child: Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Column(
+              children: [
+                Consumer<ProfileImageProvider>(
+                  builder: (ctx, profileProvider, child) {
+                    final imageUrl = profileProvider.imageUrl;
+                    final isLoading = profileProvider.isUploading;
+      
+                    ImageProvider imageProvider;
+                    if (profileProvider.cachedImageBytes != null) {
+                      imageProvider = MemoryImage(
+                        profileProvider.cachedImageBytes!,
+                      );
+                    } else if (imageUrl != null) {
+                      imageProvider = NetworkImage(imageUrl);
+                    } else {
+                      imageProvider = const AssetImage(
+                        "assets/images/avatar.png",
+                      );
+                    }
+      
+                    return Column(
+                      children: [
+                        SizedBox(height: height * 0.01,),
+                        //Image
+                        GestureDetector(
+                          onTap: () => profileProvider.pickAndUploadImage(ctx),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Stack(
+                                alignment: Alignment.center,
+                                children: [
+                                  Hero(
+                                    tag: 'profile-image-hero',
+                                    child: CircleAvatar(
+                                      radius: 70,
+                                      backgroundImage: imageProvider,
+                                    ),
+                                  ),
+                                  if (isLoading)
+                                    const CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                        Colors.blue,
                                       ),
                                     ),
-                                    if (isLoading)
-                                      const CircularProgressIndicator(
-                                        strokeWidth: 2,
-                                        valueColor:
-                                            AlwaysStoppedAnimation<Color>(
-                                              Colors.blue,
-                                            ),
-                                      ),
-                                    if (!isLoading)
-                                      Positioned(
-                                        bottom: 0,
-                                        right: 12,
-                                        child: CircleAvatar(
-                                          radius: 18,
-                                          backgroundColor: Colors.grey[200],
-                                          child: const Icon(
-                                            Icons.camera_alt,
-                                            size: 20,
-                                            color: Colors.black87,
-                                          ),
+                                  if (!isLoading)
+                                    Positioned(
+                                      bottom: 0,
+                                      right: 12,
+                                      child: CircleAvatar(
+                                        radius: 18,
+                                        backgroundColor: Colors.grey[200],
+                                        child: const Icon(
+                                          Icons.camera_alt,
+                                          size: 20,
+                                          color: Colors.black87,
                                         ),
                                       ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(height: 18),
-                          // Name
-                          Text(
-                            fullName,
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18,
-                            ),
-                          ),
-                          const SizedBox(height: 2),
-                          // Position Employee
-                          Text(
-                            "Customer Support Executive",
-                            style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w400,
-                              letterSpacing: 1.1,
-                              wordSpacing: 1.1,
-                            ),
-                          ),
-                          const SizedBox(height: 15),
-                          // Edit Profile
-                          SizedBox(
-                            width: 350,
-                            child: TextButton(
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => ProfilePage(),
-                                  ),
-                                );
-                              },
-                              style: TextButton.styleFrom(
-                                backgroundColor: const Color(0xFF3085FE),
-                                padding: const EdgeInsets.all(15),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
+                                    ),
+                                ],
                               ),
-                              child: Text(
-                                "Edit Profile",
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            ),
+                            ],
                           ),
-                          const SizedBox(height: 20),
-
-                          // List Items
-                          SizedBox(
-                            height: 420,
-                            child: ListView(
-                              padding: const EdgeInsets.symmetric(vertical: 10),
-                              children: [
-                                MenuTile(
-                                  icon: Icons.person_outline,
-                                  title: 'My Profile',
-                                  onTap: () {},
-                                ),
-                                const Divider(height: 10),
-                                MenuTile(
-                                  icon: Icons.settings_outlined,
-                                  title: 'Settings',
-                                  onTap: () {},
-                                ),
-                                const Divider(height: 10),
-                                MenuTile(
-                                  icon: Icons.description_outlined,
-                                  title: 'Terms & Conditions',
-                                  onTap: () {
-                                    /* Navigate */
-                                  },
-                                ),
-                                const Divider(height: 10),
-                                MenuTile(
-                                  icon: Icons.privacy_tip_outlined,
-                                  title: 'Privacy Policy',
-                                  onTap: () {
-                                    /* Navigate */
-                                  },
-                                ),
-                                const Divider(height: 10),
-                                SwitchListTile.adaptive(
-                                  activeColor: Colors.blue,
-                                  inactiveThumbColor: Colors.indigoAccent,
-                                  value:
-                                      Provider.of<ThemeProvider>(
-                                        context,
-                                      ).themeMode ==
-                                      ThemeMode.dark,
-                                  onChanged:
-                                      (value) => Provider.of<ThemeProvider>(
-                                        context,
-                                        listen: false,
-                                      ).toggleTheme(value),
-                                  title: Text("Dark Mode"),
-                                  secondary: Icon(Icons.dark_mode),
-                                ),
-                                const Divider(height: 10),
-                                const SizedBox(height: 20),
-                                MenuTile(
-                                  icon: Icons.logout,
-                                  title: 'Log out',
-                                  iconColor: Colors.redAccent,
-                                  textColor: Colors.redAccent,
-                                  onTap: () {
-                                    /* Logout logic */
-                                  },
-                                ),
-                              ],
-                            ),
+                        ),
+                        const SizedBox(height: 18),
+                        // Name
+                        Text(
+                          fullName,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
                           ),
-                        ],
+                        ),
+                        const SizedBox(height: 2),
+                        // Position Employee
+                        Text(
+                          "Customer Support Executive",
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w400,
+                            letterSpacing: 1.1,
+                            wordSpacing: 1.1,
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                ),
+                const SizedBox(height: 15),
+                // Edit Profile
+                SizedBox(
+                  width: 350,
+                  child: TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ProfilePage(),
+                        ),
                       );
                     },
+                    style: TextButton.styleFrom(
+                      backgroundColor: const Color(0xFF3085FE),
+                      padding: const EdgeInsets.all(15),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    child: Text(
+                      "Edit Profile",
+                      style: TextStyle(color: Colors.white),
+                    ),
                   ),
-                ],
-              ),
+                ),
+                const SizedBox(height: 20),
+      
+                // List Items
+                SizedBox(
+                  height: 420,
+                  child: ListView(
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    children: [
+                      MenuTile(
+                        icon: Icons.person_outline,
+                        title: 'My Profile',
+                        onTap: () {
+                          // Goes to Profile page
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ProfilePage(),
+                            ),
+                          );
+                        },
+                      ),
+                      const Divider(height: 10),
+                      MenuTile(
+                        icon: Icons.people_outline,
+                        title: 'Team Member',
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ProfilePage(),
+                            ),
+                          );
+                        },
+                      ),
+                      const Divider(height: 10),
+                      MenuTile(
+                        icon: Icons.description_outlined,
+                        title: 'Terms & Conditions',
+                        onTap: () {
+                          /* Navigate to Legal Page */
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => LegalScreen(),
+                            ),
+                          );
+                        },
+                      ),
+                      const Divider(height: 10),
+                      MenuTile(
+                        icon: Icons.privacy_tip_outlined,
+                        title: 'Privacy Policy',
+                        onTap: () {
+                          /* Navigate to Privacy Policy Page*/
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => PrivacyPolicyScreen(),
+                            ),
+                          );
+                        },
+                      ),
+                      const Divider(height: 10),
+                      SwitchListTile.adaptive(
+                        activeColor: const Color(0xFF3085FE),
+                        inactiveThumbColor: Colors.indigoAccent,
+                        value:
+                        context.watch<ThemeProvider>().themeMode ==
+                            ThemeMode.dark,
+                        onChanged: (value) {
+                          isDark = value;
+                          context.read<ThemeProvider>().toggleTheme(
+                            value,
+                          );
+                        },
+                        title: isDark?Text("Dark Mode"):Text("Light Mode"),
+                        secondary:
+                        isDark
+                            ? Icon(Icons.dark_mode)
+                            : Icon(Icons.light_mode_outlined),
+                      ),
+                      const Divider(height: 10),
+                      const SizedBox(height: 20),
+                      MenuTile(
+                        icon: Icons.logout,
+                        title: 'Log out',
+                        iconColor: Colors.redAccent,
+                        textColor: Colors.redAccent,
+                        onTap: () async{
+                          /* Logout logic */
+                          await OauthHelper().signOutUser();
+      
+                          // Logout and remove all from the stack
+                          if(context.mounted){
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(builder: (context) => const LoginPage()),
+                                  (route) => false,
+                            );
+                          }
+      
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+      
+      
+              ],
             ),
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 }

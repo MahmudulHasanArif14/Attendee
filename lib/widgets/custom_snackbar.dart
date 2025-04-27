@@ -9,7 +9,7 @@ class CustomSnackbar {
     double padding = 16,
     double radius = 20,
     Color color=const Color(0xFFC72C41),
-    Color svgColor=const Color(0xFFDF4F62),
+    Color svgColor=const Color(0xFFDF4F62),  String? actionLabel,   VoidCallback?  onAction,
   }) {
 
 
@@ -112,6 +112,12 @@ class CustomSnackbar {
       backgroundColor: Colors.transparent,
       elevation: 0.0,
       duration: const Duration(seconds:5),
+      action: actionLabel != null && onAction != null
+          ? SnackBarAction(
+        label: actionLabel,
+        onPressed: onAction,
+      )
+          : null,
     );
 
     // Show Snackbar

@@ -5,14 +5,15 @@ import 'package:attendee/pages/reset_page.dart';
 import 'package:flutter/foundation.dart';
   import 'package:flutter/material.dart';
   import 'package:google_sign_in/google_sign_in.dart';
-  import 'package:supabase_flutter/supabase_flutter.dart' as SupaBase;
+import 'package:shared_preferences/shared_preferences.dart';
+  import 'package:supabase_flutter/supabase_flutter.dart' as supaBase;
 
   import '../pages/verification_page.dart';
   import '../widgets/custom_alert_box.dart';
   import '../widgets/custom_snackbar.dart';
 
   class OauthHelper {
-    SupaBase.SupabaseClient supabaseInstance = SupaBase.Supabase.instance.client;
+    supaBase.SupabaseClient supabaseInstance = supaBase.Supabase.instance.client;
 
     // Register new user to the system
     Future<void> signUp({
@@ -31,7 +32,7 @@ import 'package:flutter/foundation.dart';
       }
 
       try {
-        final SupaBase.AuthResponse res = await supabaseInstance.auth.signUp(
+        final supaBase.AuthResponse res = await supabaseInstance.auth.signUp(
           email: email,
           password: password,
           emailRedirectTo: "io.supabase.flutterquickstart://login-callback",
@@ -50,7 +51,7 @@ import 'package:flutter/foundation.dart';
             );
           }
         }
-      } on SupaBase.AuthException catch (e) {
+      } on supaBase.AuthException catch (e) {
         if (context.mounted) {
           CustomSnackbar.show(context: context, label: (e.message));
         }
@@ -59,7 +60,7 @@ import 'package:flutter/foundation.dart';
 
     //   Send Verification Link to the user again
     static Future<void> sendVerificationEmail(BuildContext context) async {
-      final user = SupaBase.Supabase.instance.client.auth.currentUser;
+      final user = supaBase.Supabase.instance.client.auth.currentUser;
 
       if (user == null) {
         if (context.mounted) {
@@ -71,7 +72,7 @@ import 'package:flutter/foundation.dart';
         return;
       } else if (user.emailConfirmedAt == null) {
         // Resending the link
-        await SupaBase.Supabase.instance.client.auth.signInWithOtp(
+        await supaBase.Supabase.instance.client.auth.signInWithOtp(
           email: user.email,
           emailRedirectTo: 'io.supabase.flutterquickstart://login-callback',
         );
@@ -97,7 +98,7 @@ import 'package:flutter/foundation.dart';
       String password,
     ) async {
       try {
-        final SupaBase.AuthResponse res = await supabaseInstance.auth
+        final supaBase.AuthResponse res = await supabaseInstance.auth
             .signInWithPassword(email: email, password: password);
 
         if (context.mounted) {
@@ -116,7 +117,7 @@ import 'package:flutter/foundation.dart';
             user: res.user,
           );
         }
-      } on SupaBase.AuthException catch (error) {
+      } on supaBase.AuthException catch (error) {
         retryCount++;
         if (context.mounted) {
           CustomSnackbar.show(context: context, label: (error.message));
@@ -172,7 +173,7 @@ import 'package:flutter/foundation.dart';
 
         if (!kIsWeb && (Platform.isAndroid || Platform.isIOS)) {
           final response = await supabaseInstance.auth.signInWithIdToken(
-            provider: SupaBase.OAuthProvider.google,
+            provider: supaBase.OAuthProvider.google,
             idToken: idToken,
             accessToken: accessToken,
           );
@@ -197,10 +198,10 @@ import 'package:flutter/foundation.dart';
         // for Web
         else {
           await supabaseInstance.auth.signInWithOAuth(
-            SupaBase.OAuthProvider.google,
+            supaBase.OAuthProvider.google,
           );
         }
-      } on SupaBase.AuthException catch (e) {
+      } on supaBase.AuthException catch (e) {
         if (context.mounted) {
           CustomSnackbar.show(context: context, label: e.message);
         }
@@ -252,7 +253,7 @@ import 'package:flutter/foundation.dart';
             svgColor: Color(0xE0178327),
           );
         }
-      } on SupaBase.AuthException catch (error) {
+      } on supaBase.AuthException catch (error) {
         if (context.mounted) {
           CustomSnackbar.show(
             context: context,
@@ -309,11 +310,11 @@ import 'package:flutter/foundation.dart';
     //update password
 
    static Future<void> updatePassword(String newPassword, BuildContext context) async {
-      final supabase = SupaBase.Supabase.instance.client;
+      final supabase = supaBase.Supabase.instance.client;
 
       try {
         final response = await supabase.auth.updateUser(
-          SupaBase.UserAttributes(password: newPassword),
+          supaBase.UserAttributes(password: newPassword),
         );
 
 
@@ -344,7 +345,7 @@ import 'package:flutter/foundation.dart';
             );
           }
         }
-      } on SupaBase.AuthException catch (e) {
+      } on supaBase.AuthException catch (e) {
         // Handle exception
         if (context.mounted) {
           CustomSnackbar.show(
@@ -355,6 +356,33 @@ import 'package:flutter/foundation.dart';
       }
     }
 
+
+
+
+
+  ///SignOut Functionality
+    Future<void> signOutUser() async {
+      final supabase = supaBase.Supabase.instance.client;
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.clear();
+      await supabase.auth.signOut();
+
+    }
+
+
+    static bool isUserLoggedIn() {
+      final supabase = supaBase.Supabase.instance.client;
+      final session = supabase.auth.currentSession;
+      final user = supabase.auth.currentUser;
+
+      return session != null && user != null;
+    }
+
+    static supaBase.User currentUser() {
+      final supabase = supaBase.Supabase.instance.client;
+      final user = supabase.auth.currentUser;
+      return user!;
+    }
 
 
 

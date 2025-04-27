@@ -163,4 +163,58 @@ class NotificationServices {
       payload: 'Demo Payload',
     );
   }
+
+
+
+
+
+
+
+
+  // Custom method to show manual local notifications
+  Future<void> showManualNotification({
+    required String title,
+    required String body,
+  }) async {
+
+
+    const AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
+      'manual_channel',
+      'Manual Notifications',
+      importance: Importance.max,
+      priority: Priority.high,
+      playSound: true,
+    );
+
+    const DarwinNotificationDetails iosDetails = DarwinNotificationDetails(
+      presentAlert: true,
+      presentBadge: true,
+      presentSound: true,
+    );
+
+    const NotificationDetails notificationDetails = NotificationDetails(
+      android: androidDetails,
+      iOS: iosDetails,
+    );
+
+    await localPlugin.show(
+      0,
+      title,
+      body,
+      notificationDetails,
+      payload: 'manual_payload',
+    );
+  }
+
+
+
+
+
+
+
+
+
+
+
+
 }

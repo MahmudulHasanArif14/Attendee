@@ -7,7 +7,7 @@ import '../pages/dashboard.dart';
 
 class CustomAlertBox{
 
-  void showCustomAnimatedAlert({required BuildContext context, required String title,required String label, required User? user}) {
+  void showCustomAnimatedAlert({required BuildContext context, required String title,required String label,  User? user}) {
     showGeneralDialog(
       context: context,
       barrierDismissible: false,

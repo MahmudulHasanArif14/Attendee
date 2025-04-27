@@ -1,6 +1,9 @@
+import 'package:attendee/auth/supabase_auth.dart';
 import 'package:attendee/pages/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
+import 'dashboard.dart';
 
 
 class Splashscreen extends StatefulWidget {
@@ -34,16 +37,24 @@ class SplashscreenState extends State<Splashscreen> {
   // Navigating to Login Page
   void _navigateToLoginPage() async {
     await Future.delayed(const Duration(seconds: 1));
-    if (!mounted) return; // Ensure widget is still active before navigating
+    if (!mounted) return;
+
+    final bool isLoggedIn = OauthHelper.isUserLoggedIn();
+    final Widget destination = isLoggedIn
+        ? HomePage(user: OauthHelper.currentUser())
+        : const LoginPage();
 
     Navigator.pushReplacement(
       context,
       PageRouteBuilder(
-        pageBuilder:
-            (context, animation, secondaryAnimation) => LoginPage(),
+        pageBuilder: (_, __, ___) => destination,
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          return FadeTransition(opacity: animation.drive(Tween(begin: 0.0,end:1.0).chain(CurveTween(curve:Curves.bounceIn))),
-              child: child);
+          return FadeTransition(
+            opacity: animation.drive(
+              Tween(begin: 0.0, end: 1.0).chain(CurveTween(curve: Curves.bounceIn)),
+            ),
+            child: child,
+          );
         },
       ),
     );
