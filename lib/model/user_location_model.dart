@@ -16,6 +16,11 @@ class UserLocationModel {
       longitude: 91.861259,
     ),
     UserLocationModel(
+      address: 'Western Communication,51 Mitali Unit B,5th Floor Raynagor,Rajbar,Syl,BD',
+      latitude: 24.9051854,
+      longitude: 91.8872579,
+    ),
+    UserLocationModel(
       address: '1, Grosvenor House, Durkins Rd, East Grinstead RH19 2RW, UK',
       latitude: 51.128503,
       longitude: -0.008932,

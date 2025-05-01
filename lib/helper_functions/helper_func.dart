@@ -14,7 +14,7 @@ import '../services/notification_service.dart';
 class HelperFunction {
   static const double allowedDistance = 100;
   final supabase = Supabase.instance.client;
-  int breakCount=0;
+  int breakCount = 0;
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
 
@@ -27,28 +27,47 @@ class HelperFunction {
     if (!context.mounted) return;
 
     ///Fetch Current User location lat and longitude
-    final dbProvider = Provider.of<DatabaseHelperProvider>(context,listen: false);
+    final dbProvider = Provider.of<DatabaseHelperProvider>(
+      context,
+      listen: false,
+    );
     final profile = dbProvider.profile;
-    final officelatitude = profile?["latitude"];
-    final officelongitude = profile?["longitude"];
-    final User currUser = OauthHelper.currentUser();
+    final officelatitude = profile?["latitude"]; //office latitude
+    final officelongitude = profile?["longitude"]; //office longitude
+    final User currUser = OauthHelper.currentUser(); // curr user
     final today = DateTime.now().toUtc();
     print(
       "officelatitude $officelatitude and officelongitude $officelongitude",
     );
 
+    final startTime = profile?["start_time"];
+    final endTime = profile?["end_time"];
 
-    final startTime=profile?["start_time"];
-    final endTime=profile?["end_time"];
-
-    if(startTime==null && endTime==null && officelatitude==null && officelongitude==null){
-      CustomSnackbar.show(context: context, label: "To Access this Feature Please Complete Your Profile");
+    if (startTime == null &&
+        endTime == null &&
+        officelatitude == null &&
+        officelongitude == null) {
+      CustomSnackbar.show(
+        context: context,
+        label: "To Access this Feature Please Complete Your Profile",
+      );
       return;
     }
 
-
-
-
+    if (startTime == null && endTime == null) {
+      CustomSnackbar.show(
+        context: context,
+        label: "To Access this Feature Please Complete Your Profile",
+      );
+      return;
+    }
+    if (officelatitude == null && officelongitude == null) {
+      CustomSnackbar.show(
+        context: context,
+        label: "To Access this Feature Please Complete Your Profile",
+      );
+      return;
+    }
 
     try {
       if (officelatitude != null && officelongitude != null) {
@@ -61,8 +80,8 @@ class HelperFunction {
             position.longitude,
           );
 
-          print(position);
-          
+          print("your current location is $position");
+
           ///Check the user is within the office radius or not
           if (distance > allowedDistance) {
             if (context.mounted) {
@@ -71,22 +90,23 @@ class HelperFunction {
                 label: "You are not inside office!",
               );
             }
-            print("inside office your distance is $distance");
+            print("from office your distance is $distance");
             return;
           }
         }
       }
 
       ///Check the userPrevious CheckIn time so only after 16hour he/she can checkIn again
-      final lastRecord = await supabase
-          .from('attendance')
-          .select()
-          .eq('profile_id', currUser.id)
-          .not('check_in_time', 'is', null)
-          .order('date', ascending: false)
-          .order('check_in_time', ascending: false)
-          .limit(1)
-          .maybeSingle();
+      final lastRecord =
+          await supabase
+              .from('attendance')
+              .select()
+              .eq('profile_id', currUser.id)
+              .not('check_in_time', 'is', null)
+              .order('date', ascending: false)
+              .order('check_in_time', ascending: false)
+              .limit(1)
+              .maybeSingle();
 
       if (lastRecord != null) {
         if (lastRecord['check_in_time'] != null) {
@@ -94,14 +114,15 @@ class HelperFunction {
           final hoursSinceLastCheckIn =
               DateTime.now().difference(lastCheckIn).inHours;
 
-          if (hoursSinceLastCheckIn < 16) {
+          if (hoursSinceLastCheckIn < 15) {
             if (context.mounted) {
               CustomSnackbar.show(
                 context: context,
-                label: "You can only check-in after 16 hours from your last check-in!",
+                label:
+                    "You can only check-in after 16 hours from your last check-in!",
               );
             }
-            print("time not yet");
+            print("You are too early to office ! time not yet");
             return;
           }
         } else {
@@ -109,8 +130,9 @@ class HelperFunction {
         }
       }
 
-
       final todayDateString = DateFormat('yyyy-MM-dd').format(today);
+      final timeNow = DateFormat('hh:mm a').format(today.toLocal());
+
 
       final rowCheckedIn = await supabase
           .from('attendance')
@@ -118,16 +140,14 @@ class HelperFunction {
           .eq('profile_id', currUser.id)
           .not('check_in_time', 'is', null);
 
-
       final hasCheckedInToday = rowCheckedIn.any((record) {
         final checkInTime = record['check_in_time'];
         if (checkInTime == null) {
           return false;
         }
-        final checkInDate = DateFormat('yyyy-MM-dd').format(
-          DateTime.parse(checkInTime).toUtc(),
-        );
-
+        final checkInDate = DateFormat(
+          'yyyy-MM-dd',
+        ).format(DateTime.parse(checkInTime).toUtc());
         return checkInDate == todayDateString;
       });
 
@@ -142,26 +162,43 @@ class HelperFunction {
         }
         return;
       } else {
-        // Insert new record
-        final response =
-            await supabase
-                .from('attendance')
-                .insert({
-                  'check_in_time': today.toIso8601String(),
-                  'profile_id': currUser.id,
-                  'date':todayDateString,
-                })
-                .select()
-                .single();
+        ///Update data
+
+        if (context.mounted) {
+          final _ = Provider.of<DatabaseHelperProvider>(
+            context,
+            listen: false,
+          ).updateAttendance(
+            profileId: currUser.id,
+            checkInTime: today,
+            dateString: todayDateString,
+          );
+        }
+
 
 
         if (context.mounted) {
+          final response =
+              Provider.of<DatabaseHelperProvider>(
+                context,
+                listen: false,
+              ).todayAttendance;
           Provider.of<AttendanceProvider>(
             context,
             listen: false,
-          ).checkIn(response['id'], today);
+          ).checkIn(response?['id'], today);
 
-          Provider.of<AttendanceProvider>(context, listen: false).setCheckedIn(true);
+          Provider.of<AttendanceProvider>(
+            context,
+            listen: false,
+          ).setCheckedIn(true);
+
+          ///Sending notification to the user on success checkedIn
+          NotificationServices().showManualNotification(
+            title: "Attendance Alert 🚨",
+            body: "You Checked in  office at $timeNow",
+          );
+
           CustomSnackbar.show(
             context: context,
             title: "You're In! ✅",
@@ -172,7 +209,7 @@ class HelperFunction {
 
           trackUser(context);
 
-          print("Checked office");
+          print("Checked in success you are in  office");
         }
       }
     } catch (e) {
@@ -187,23 +224,50 @@ class HelperFunction {
   ///CheckOut Functionality
 
   Future<void> handleCheckOut(BuildContext context) async {
-    final provider = Provider.of<AttendanceProvider>(context,listen: false);
+    final provider = Provider.of<AttendanceProvider>(context, listen: false);
     if (!provider.isCheckedIn) return;
     final User currUser = OauthHelper.currentUser();
 
     final today = DateTime.now().toUtc();
-    final todayDate=DateFormat('yyyy-MM-dd').format(today);
+    final todayDate = DateFormat('yyyy-MM-dd').format(today);
+    final timeNow = DateFormat('hh:mm a').format(today.toLocal());
 
-    await supabase
-        .from('attendance')
-        .update({
-      'check_out_time': today.toIso8601String(),
-      'totalBreakTime': provider.totalBreakDuration.inSeconds,
-    }).eq('profile_id', currUser.id).eq('date', todayDate);
+    ///update checkout time to db
+    if (context.mounted) {
+      await Provider.of<DatabaseHelperProvider>(
+        context,
+        listen: false,
+      ).updateCheckout(
+        currUser.id,
+        today,
+        provider.totalBreakDuration,
+        todayDate,
+      );
+    }
 
-    if(context.mounted){
-      Provider.of<AttendanceProvider>(context,listen: false).checkOut();
-      Provider.of<AttendanceProvider>(context, listen: false).setCheckedIn(false);
+    bool isUpdate =
+        context.mounted
+            ? Provider.of<DatabaseHelperProvider>(
+              context,
+              listen: false,
+            ).isUpdated
+            : false;
+
+    if (!isUpdate) {
+      return;
+    }
+
+    NotificationServices().showManualNotification(
+      title: "Attendance Alert 🚨",
+      body: "You Checkout From office at $timeNow",
+    );
+
+    if (context.mounted) {
+      Provider.of<AttendanceProvider>(context, listen: false).checkOut();
+      Provider.of<AttendanceProvider>(
+        context,
+        listen: false,
+      ).setCheckedIn(false);
     }
 
     if (context.mounted) {
@@ -223,8 +287,11 @@ class HelperFunction {
 
   Future<void> trackUser(BuildContext context) async {
     ///Fetch Current User location lat and longitude
-    final dbProvider = Provider.of<DatabaseHelperProvider>(context,listen: false);
-    final provider = Provider.of<AttendanceProvider>(context,listen: false);
+    final dbProvider = Provider.of<DatabaseHelperProvider>(
+      context,
+      listen: false,
+    );
+    final provider = Provider.of<AttendanceProvider>(context, listen: false);
 
     final profile = dbProvider.profile;
     final officelatitude = profile?["latitude"];
@@ -300,49 +367,49 @@ class HelperFunction {
                 final todayDate = DateFormat('yyyy-MM-dd').format(today);
                 Map<String, dynamic>? todayData;
                 if (context.mounted) {
-                  await Provider.of<DatabaseHelperProvider>(context, listen: false).fetchUserAttendanceByDate(todayDate);
-                  if(context.mounted) todayData = Provider.of<DatabaseHelperProvider>(context, listen: false).todayAttendance;
+                  await Provider.of<DatabaseHelperProvider>(
+                    context,
+                    listen: false,
+                  ).fetchUserAttendanceByDate(todayDate);
+                  if (context.mounted) {
+                    todayData =
+                        Provider.of<DatabaseHelperProvider>(
+                          context,
+                          listen: false,
+                        ).todayAttendance;
+                  }
                 }
 
-                int breakTime = (todayData?["totalBreakTime"] ?? 0) + totalBreakTime.inSeconds;
-                int breakcnt=(todayData?["breakCount"]?? 0 )+breakCount;
+                int breakTime =
+                    (todayData?["totalBreakTime"] ?? 0) +
+                    totalBreakTime.inSeconds;
+                int breakcnt = (todayData?["breakCount"] ?? 0) + breakCount;
 
                 final supabase = Supabase.instance.client;
                 User? currUser = OauthHelper.currentUser();
 
+                if (todayData != null) {
+                  // update breakCount
+                  final response = await Provider.of<DatabaseHelperProvider>(
+                    context,
+                    listen: false,
+                  ).updateBreakCount(
+                    currUser.id,
+                    breakcnt,
+                    breakTime,
+                    todayDate,
+                  );
 
-                if(todayData!=null){
-                  // update
-                  final response= await supabase
-                      .from('attendance')
-                      .update({
-                    'totalBreakTime': breakTime,
-                    'breakCount':breakcnt,
-                  }).eq('profile_id', currUser.id).eq('date', todayDate).select();
-
-                  print("Data Updated with $response");
-
-                }else {
+                  print("Data Updated with response");
+                } else {
                   // insert
-                  await supabase
-                      .from('attendance')
-                      .insert({
+                  await supabase.from('attendance').insert({
                     'profile_id': currUser.id,
                     'date': todayDate,
                     'totalBreakTime': breakTime,
-                    'breakCount':breakcnt,
+                    'breakCount': breakcnt,
                   });
                 }
-
-
-
-
-
-
-
-
-
-
 
                 print("Break Duration: ${breakDuration.inMinutes} min");
                 print(
@@ -404,9 +471,4 @@ class HelperFunction {
     }
     return false;
   }
-
-
-
-
-
-  }
+}

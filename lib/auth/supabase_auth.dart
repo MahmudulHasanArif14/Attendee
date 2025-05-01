@@ -1,10 +1,12 @@
   import 'dart:io';
 
   import 'package:app_links/app_links.dart';
+import 'package:attendee/database/database_helper.dart';
 import 'package:attendee/pages/reset_page.dart';
 import 'package:flutter/foundation.dart';
   import 'package:flutter/material.dart';
   import 'package:google_sign_in/google_sign_in.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
   import 'package:supabase_flutter/supabase_flutter.dart' as supaBase;
 
@@ -361,12 +363,19 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 
   ///SignOut Functionality
-    Future<void> signOutUser() async {
-      final supabase = supaBase.Supabase.instance.client;
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.clear();
-      await supabase.auth.signOut();
-
+    Future<void> signOutUser(BuildContext context) async {
+      try{
+        final supabase = supaBase.Supabase.instance.client;
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.clear();
+        if( context.mounted) Provider.of<DatabaseHelperProvider>(context,listen: false).clearData();
+        await supabase.auth.signOut();
+      }catch(e){
+        debugPrint('Sign-out error: $e');
+        if (kDebugMode) {
+          print(e.toString());
+        }
+      }
     }
 
 

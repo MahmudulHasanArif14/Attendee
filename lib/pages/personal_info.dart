@@ -41,7 +41,6 @@ class _ProfileDetailsState extends State<ProfileDetails> {
     final currentUser=OauthHelper.currentUser();
     final email=currentUser.email.toString().trim();
 
-    //will get <String,dynamic> list
     final profile = dbProvider.profile;
 
     return SafeArea(

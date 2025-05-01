@@ -158,8 +158,7 @@ class _SettingPageState extends State<SettingPage> {
                 const SizedBox(height: 20),
       
                 // List Items
-                SizedBox(
-                  height: 420,
+                Expanded(
                   child: ListView(
                     padding: const EdgeInsets.symmetric(vertical: 10),
                     children: [
@@ -245,7 +244,7 @@ class _SettingPageState extends State<SettingPage> {
                         textColor: Colors.redAccent,
                         onTap: () async{
                           /* Logout logic */
-                          await OauthHelper().signOutUser();
+                          await OauthHelper().signOutUser(context);
       
                           // Logout and remove all from the stack
                           if(context.mounted){

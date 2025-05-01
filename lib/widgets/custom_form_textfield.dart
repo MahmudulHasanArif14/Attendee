@@ -8,7 +8,7 @@ class CustomFormTextField extends StatelessWidget {
   final String? hintText;
   final String? Function(String?)? validator;
   final void Function(String)? onChanged;
-  final dynamic obscureText;
+  final bool obscureText;
   final Widget? prefix,prefixIcon;
 
 
