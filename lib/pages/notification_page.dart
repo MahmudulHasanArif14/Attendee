@@ -1,8 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import '../provider/notification_provider.dart';
 
-class NotificationScreen extends StatelessWidget {
+class NotificationScreen extends StatefulWidget {
   const NotificationScreen({super.key});
+
+  @override
+  State<NotificationScreen> createState() => _NotificationScreenState();
+}
+
+class _NotificationScreenState extends State<NotificationScreen> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await Provider.of<NotificationProvider>(context, listen: false).init();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -10,56 +25,46 @@ class NotificationScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Notifications'),
         centerTitle: true,
+        forceMaterialTransparency: true,
       ),
-      body: Hero(
-        tag: "View All",
-        child: ListView(
-          children: const [
-            NotificationItem(
-              title: 'You update your profile picture',
-              description: 'You just update your profile picture.',
-              date: 'June 16th',
-            ),
-            Divider(height: 1),
-            NotificationItem(
-              title: 'Password Changed',
-              description: 'You\'ve completed change the password.',
-              date: 'April 13, 2023',
-              time: '22:32 PM',
-            ),
-            Divider(height: 1),
-            NotificationItem(
-              title: 'Mark Alen Applied for Leave',
-              description: 'Please accept my home request.',
-              date: 'February 23, 2022',
-              time: '21:32 PM',
-            ),
-            Divider(height: 1),
-            NotificationItem(
-              title: 'System Update',
-              description: 'Please update to revert app, for get oncoring experience.',
-              date: 'April 15, 2023',
-              time: '21:32 PM',
-            ),
-            Divider(height: 1),
-            NotificationItem(
-              title: 'You update your profile picture',
-              description: 'You just update your profile picture.',
-              date: 'June 16th',
-            ),
-            Divider(height: 1),
-            NotificationItem(
-              title: 'Password Changed',
-              description: 'You\'ve completed change the password.',
-              date: 'April 12, 2023',
-              time: '22:32 PM',
-            ),
-          ],
-        ),
+      body: Consumer<NotificationProvider>(
+        builder: (ctx, provider, __) {
+          if (provider.isLoading) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+
+          if (provider.notifications.isEmpty) {
+            return const Center(
+              child: Padding(
+                padding: EdgeInsets.symmetric(vertical: 20),
+                child: Text(
+                  'No notifications available now.',
+                  style: TextStyle(color: Colors.white70),
+                ),
+              ),
+            );
+          }
+          return ListView.builder(
+            itemCount: provider.notifications.length,
+            itemBuilder: (context, index) {
+              final event = provider.notifications[index];
+              return NotificationItem(
+                title: event.title,
+                description: event.body,
+                date: DateFormat.yMMMMd().format(event.timestamp),
+                time: DateFormat.Hm().format(event.timestamp),
+              );
+            },
+          );
+        },
       ),
     );
   }
 }
+
+
 
 class NotificationItem extends StatelessWidget {
   final String title;
@@ -87,7 +92,7 @@ class NotificationItem extends StatelessWidget {
             margin: const EdgeInsets.only(right: 12),
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: Colors.blue[100],
+              color: Colors.blue[300],
               shape: BoxShape.circle,
             ),
             child: const Icon(Icons.notifications_none, size: 24),

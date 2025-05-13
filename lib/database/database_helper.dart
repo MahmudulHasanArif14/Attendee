@@ -13,14 +13,86 @@ class DatabaseHelperProvider extends ChangeNotifier {
   List<Map<String, dynamic>>? _attendance;
   List<Map<String, dynamic>>? get attendance => _attendance;
 
+  List<Map<String, dynamic>>? _profilesInfo;
+  List<Map<String, dynamic>>? get profilesInfo => _profilesInfo;
+
+  List<Map<String, dynamic>>? _teamMemberList;
+  List<Map<String, dynamic>>? get teamMemberList => _teamMemberList;
+
+
+
   Map<String, dynamic>? _todayAttendance;
   Map<String, dynamic>? get todayAttendance => _todayAttendance;
+
+
+  Map<String, dynamic>? _todayStatus;
+  Map<String, dynamic>? get todayStatus => _todayStatus;
+
+
 
   bool _isLoading = false;
   bool get isLoading => _isLoading;
 
   String? _error;
   String? get error => _error;
+
+
+
+
+  /// Fetch All user profile all data from Supabase
+  Future<void> fetchAllUserProfile() async {
+    _setLoading(true);
+    try {
+      final response = await supabase.from('profiles').select();
+      _profilesInfo = response;
+      _error = null;
+      notifyListeners();
+        } catch (e) {
+      _error = "Failed to fetch profile: $e";
+    } finally {
+      _setLoading(false);
+    }
+  }
+
+  Future<void> fetchTeamMemberProfile() async {
+    final userId = supabase.auth.currentUser?.id;
+    if (userId == null) return;
+    
+    _setLoading(true);
+    try {
+
+      final currentUser = await supabase
+          .from('profiles')
+          .select('start_time, end_time')
+          .eq('id', userId)
+          .single();
+
+      final startTime = currentUser['start_time'];
+      final endTime = currentUser['end_time'];
+
+      print("Start time of current user $startTime and end time of current user $endTime");
+
+
+      final response = await supabase
+          .from('profiles')
+          .select()
+          .eq('start_time', startTime)
+          .eq('end_time', endTime);
+
+      print("All User same time $response");
+      _teamMemberList = response;
+      _error = null;
+      notifyListeners();
+    } catch (e) {
+      _error = "Failed to fetch profile: $e";
+    } finally {
+      _setLoading(false);
+    }
+  }
+  
+
+
+
 
   /// Fetch user profile all data from Supabase
   Future<void> fetchUserProfile() async {
@@ -258,7 +330,7 @@ class DatabaseHelperProvider extends ChangeNotifier {
     String todayDate,
   ) async {
     try {
-      final response = await supabase
+      final _ = await supabase
           .from('attendance')
           .update({
             'breakCount': breakCount,
@@ -283,7 +355,7 @@ class DatabaseHelperProvider extends ChangeNotifier {
     String todayDate,
   ) async {
     try {
-      final response = await supabase.from('attendance').insert({
+      final _ = await supabase.from('attendance').insert({
         'profile_id': profileId,
         'date': todayDate,
         'totalBreakTime': totalBreakDuration,
@@ -341,6 +413,53 @@ class DatabaseHelperProvider extends ChangeNotifier {
       _setLoading(false);
     }
   }
+
+
+
+
+
+  /// Fetch User Attendance by date and userId
+  Future<void> fetchUserAttendanceById(String date, String userId) async {
+    _setLoading(true);
+    try {
+      final response = await supabase
+          .from('attendance')
+          .select()
+          .eq('profile_id', userId)
+          .eq('date', date)
+          .maybeSingle();
+
+      if (response != null) {
+        _todayStatus = response;
+        notifyListeners();
+        if (kDebugMode) {
+          print('Fetched attendance: ${_todayStatus?["check_in_time"]}');
+        }
+      } else {
+        _todayStatus = null;
+        if (kDebugMode) {
+          print('No attendance record found for $userId on $date');
+        }
+      }
+
+      _error = null;
+    } catch (e) {
+      _error = "Failed to fetch attendance: $e";
+      if (kDebugMode) {
+        print(_error);
+      }
+    } finally {
+      _setLoading(false);
+    }
+  }
+
+
+
+
+
+
+
+
 
   /// Update a specific field for the current user
   Future<void> updateUserField(String fieldKey, dynamic newValue) async {

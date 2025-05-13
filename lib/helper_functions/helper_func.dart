@@ -1,3 +1,4 @@
+
 import 'package:attendee/auth/supabase_auth.dart';
 import 'package:attendee/widgets/custom_snackbar.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +10,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../database/database_helper.dart';
 import '../geolocation/location_helper.dart';
 import '../provider/attendance_provider.dart';
+import '../provider/notification_provider.dart';
 import '../services/notification_service.dart';
 
 class HelperFunction {
@@ -193,10 +195,13 @@ class HelperFunction {
             listen: false,
           ).setCheckedIn(true);
 
+          final provider = Provider.of<NotificationProvider>(context, listen: false);
+
           ///Sending notification to the user on success checkedIn
           NotificationServices().showManualNotification(
             title: "Attendance Alert 🚨",
             body: "You Checked in  office at $timeNow",
+            provider: provider,
           );
 
           CustomSnackbar.show(
@@ -257,9 +262,13 @@ class HelperFunction {
       return;
     }
 
+    final notificationProvider = Provider.of<NotificationProvider>(context, listen: false);
+
+
     NotificationServices().showManualNotification(
       title: "Attendance Alert 🚨",
       body: "You Checkout From office at $timeNow",
+      provider: notificationProvider,
     );
 
     if (context.mounted) {
@@ -340,9 +349,13 @@ class HelperFunction {
                     DateTime.now().difference(leftOfficeTime!).inMinutes;
                 if (minutesOutside >= 10) {
                   // Warn to check out
+                  final provider = Provider.of<NotificationProvider>(context, listen: false);
+
+
                   NotificationServices().showManualNotification(
                     title: "Attendance Alert 🚨",
                     body: "You're out of office! Please check out.",
+                    provider: provider
                   );
 
                   if (context.mounted) {
@@ -390,7 +403,7 @@ class HelperFunction {
 
                 if (todayData != null) {
                   // update breakCount
-                  final response = await Provider.of<DatabaseHelperProvider>(
+                  final _ = await Provider.of<DatabaseHelperProvider>(
                     context,
                     listen: false,
                   ).updateBreakCount(
@@ -424,6 +437,14 @@ class HelperFunction {
           }
         }
       },
+      onServiceStatus: (ServiceStatus status){
+       if(status==ServiceStatus.disabled){
+            _isLocationPermissionAllowed(context);
+        }
+
+      }
+
+
     );
   }
 

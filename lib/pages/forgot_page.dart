@@ -77,6 +77,8 @@ class _ForgotPageState extends State<ForgotPage> {
               Navigator.pop(context);
             },
           ),
+          forceMaterialTransparency: true,
+
         ),
         body: SafeArea(
           child: LayoutBuilder(

@@ -15,6 +15,7 @@ class ProfilePage extends StatelessWidget {
         child: Scaffold(
           backgroundColor: theme.colorScheme.surface,
           appBar: AppBar(
+            forceMaterialTransparency: true,
             backgroundColor: theme.colorScheme.surface,
             elevation: 0,
             title: const Text(

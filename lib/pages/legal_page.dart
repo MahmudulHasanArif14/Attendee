@@ -10,6 +10,8 @@ class LegalScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text("Terms & Conditions"),
         centerTitle: true,
+        forceMaterialTransparency: true,
+
       ),
       body: Padding(
         padding: const EdgeInsets.only(left: 16,bottom: 16,right: 16),

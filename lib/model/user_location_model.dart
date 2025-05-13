@@ -21,6 +21,11 @@ class UserLocationModel {
       longitude: 91.8872579,
     ),
     UserLocationModel(
+      address: 'Leading University,Sylhet',
+      latitude: 24.8693875,
+      longitude: 91.8049219,
+    ),
+    UserLocationModel(
       address: '1, Grosvenor House, Durkins Rd, East Grinstead RH19 2RW, UK',
       latitude: 51.128503,
       longitude: -0.008932,

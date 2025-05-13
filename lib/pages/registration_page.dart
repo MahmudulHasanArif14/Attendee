@@ -2,8 +2,10 @@ import 'package:attendee/widgets/custom_form_textfield.dart';
 import 'package:attendee/widgets/custom_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
+import 'package:provider/provider.dart';
 
 import '../auth/supabase_auth.dart';
+import '../database/database_helper.dart';
 import '../widgets/custom_text.dart';
 import 'legal_page.dart';
 import 'login_page.dart';
@@ -85,6 +87,10 @@ class _RegistrationPageState extends State<RegistrationPage> {
         name: name,
         fullPhoneNumber: fullPhoneNumber,
       );
+
+
+
+
     } else {
       CustomSnackbar.show(
         context: context,

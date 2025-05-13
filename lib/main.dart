@@ -1,8 +1,8 @@
 import 'dart:async';
-
 import 'package:attendee/firebase_options.dart';
 import 'package:attendee/pages/splash_screen.dart';
 import 'package:attendee/provider/attendance_provider.dart';
+import 'package:attendee/provider/notification_provider.dart';
 import 'package:attendee/provider/profile_image_provider.dart';
 import 'package:attendee/provider/theme_provider.dart';
 import 'package:attendee/services/notification_service.dart';
@@ -14,7 +14,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-
 import 'database/database_helper.dart';
 import 'helper_functions/helper_func.dart';
 
@@ -25,6 +24,9 @@ Future<void> msgHandler(RemoteMessage msg) async {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  final notificationProvider = NotificationProvider();
+  await notificationProvider.init();
+
   await dotenv.load(fileName: ".env");
   final supabaseUrl = dotenv.env['SUPABASE_URL'];
   final supabaseKey = dotenv.env['SUPABASE_ANON_KEY'];
@@ -44,6 +46,8 @@ void main() async {
         ),
         ChangeNotifierProvider(create: (context) => DatabaseHelperProvider()),
         ChangeNotifierProvider(create: (context) => AttendanceProvider()),
+        ChangeNotifierProvider(create: (_) => NotificationProvider()),
+
       ],
       child: const MyApp(),
     ),

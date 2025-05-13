@@ -5,14 +5,18 @@ import 'package:attendee/widgets/custom_alert_box.dart';
 import 'package:attendee/widgets/custom_snackbar.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import '../database/database_helper.dart';
 
 class VerificationPage extends StatefulWidget {
   final User? user;
   final bool? isReset;
   final String? email;
-  const VerificationPage({super.key,  this.user, this.isReset,this.email});
+  final String? phone;
+  const VerificationPage({super.key,  this.user, this.isReset,this.email, this.phone});
   @override
   State<VerificationPage> createState() => _VerificationPageState();
 }
@@ -99,8 +103,25 @@ class _VerificationPageState extends State<VerificationPage> {
 
 
 
+//Update phoneno
+  Future<void> _updateField(
+      BuildContext context,
+      String key,
+      String value,
+      ) async {
+
+      try{
+        await Provider.of<DatabaseHelperProvider>(
+          context,
+          listen: false,
+        ).updateUserField(key, value);
+        print("All Data UPDated");
+      }catch(e){
+        print(e.toString());
+      }
 
 
+  }
 
 
 
@@ -129,12 +150,23 @@ class _VerificationPageState extends State<VerificationPage> {
           if (updatedUser != null && updatedUser.emailConfirmedAt != null) {
             timer.cancel();
             if (mounted) {
-              CustomAlertBox().showCustomAnimatedAlert(
-                context: context,
-                title: "🎉 Congratulations $lastName",
-                label: "Your account is ready to use",
-                user: updatedUser,
-              );
+
+              if(widget.phone!=null && widget.phone!.isNotEmpty){
+                await _updateField(context, 'phone', widget.phone!);
+              }
+
+              
+
+
+             if(mounted){
+               CustomAlertBox().showCustomAnimatedAlert(
+                 context: context,
+                 title: "🎉 Congratulations $lastName",
+                 label: "Your account is ready to use",
+                 user: updatedUser,
+               );
+             }
+
             }
           }
         }
@@ -181,6 +213,7 @@ class _VerificationPageState extends State<VerificationPage> {
         centerTitle: true,
         iconTheme: IconThemeData(color: Colors.white),
         elevation: 1,
+        forceMaterialTransparency: true,
       ),
       body: Container(
         decoration: const BoxDecoration(

@@ -10,6 +10,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text("Privacy Policy"),
         centerTitle: true,
+        forceMaterialTransparency: true,
       ),
       body: Padding(
         padding: const EdgeInsets.only(left: 16, right: 16, bottom: 16),

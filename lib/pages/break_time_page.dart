@@ -183,6 +183,8 @@ class _BreakManagementPageState extends State<BreakManagementPage>
         automaticallyImplyLeading: true,
         title: const Text('Break Time'),
         centerTitle: true,
+        forceMaterialTransparency: true,
+
       ),
       body: Center(
         child: Padding(

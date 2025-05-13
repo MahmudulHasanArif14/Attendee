@@ -1,4 +1,4 @@
-package com.example.attendee
+package com.westerncars.attendee
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -63,6 +63,8 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: true,
+        forceMaterialTransparency: true,
+
       ),
       body: SafeArea(
 

@@ -7,23 +7,19 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1086961716031:android:2d86cae4185db244b9218a",
+        "mobilesdk_app_id": "1:1086961716031:android:0496b99d6aa38e45b9218a",
         "android_client_info": {
-          "package_name": "com.example.attendee"
+          "package_name": "com.westerncars.attendee"
         }
       },
       "oauth_client": [
         {
-          "client_id": "1086961716031-b2b9ch5ekkavmsusutmvleesm8fp1q6g.apps.googleusercontent.com",
+          "client_id": "1086961716031-fes0khabhumgbd5r2nlojoko0vjbbkur.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.attendee",
+            "package_name": "com.westerncars.attendee",
             "certificate_hash": "9089c817d00b1e4e736a9b624172474ff6dc18d5"
           }
-        },
-        {
-          "client_id": "1086961716031-h6c9n8tbunllqifs1ri12soo8kjmlo6j.apps.googleusercontent.com",
-          "client_type": 3
         }
       ],
       "api_key": [
@@ -35,14 +31,14 @@
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "1086961716031-h6c9n8tbunllqifs1ri12soo8kjmlo6j.apps.googleusercontent.com",
+              "client_id": "1086961716031-mu5did4abp5br146us1ss84qa6ul21am.apps.googleusercontent.com",
               "client_type": 3
             },
             {
-              "client_id": "1086961716031-9fgtutdctvskbrrdmlprgcqpc8cheiu7.apps.googleusercontent.com",
+              "client_id": "1086961716031-rb3fiiso5bv1954iqaccroagd58h6rsk.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.example.attendee"
+                "bundle_id": "com.westerncars.attendee"
               }
             }
           ]

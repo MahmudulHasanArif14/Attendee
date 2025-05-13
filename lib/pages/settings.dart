@@ -1,6 +1,7 @@
 import 'package:attendee/auth/supabase_auth.dart';
 import 'package:attendee/pages/privacy_policy.dart';
 import 'package:attendee/pages/profile.dart';
+import 'package:attendee/pages/team_member_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -8,6 +9,7 @@ import '../provider/profile_image_provider.dart';
 import '../provider/theme_provider.dart';
 import 'legal_page.dart';
 import 'login_page.dart';
+import 'package:attendee/widgets/custom_alert_box.dart';
 
 class SettingPage extends StatefulWidget {
   final User user;
@@ -183,7 +185,7 @@ class _SettingPageState extends State<SettingPage> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => ProfilePage(),
+                              builder: (context) => TeamMemberPage(),
                             ),
                           );
                         },
@@ -257,6 +259,8 @@ class _SettingPageState extends State<SettingPage> {
       
                         },
                       ),
+
+
                     ],
                   ),
                 ),

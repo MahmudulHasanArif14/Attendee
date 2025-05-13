@@ -71,6 +71,8 @@ class _LoginPageState extends State<LoginPage> {
         elevation: 0,
         systemOverlayStyle: SystemUiOverlayStyle.dark,
         automaticallyImplyLeading: false,
+        forceMaterialTransparency: true,
+
       ),
 
       body: GestureDetector(

@@ -1,14 +1,25 @@
 import 'dart:async';
 
+import 'package:attendee/pages/break_time_page.dart';
+import 'package:attendee/widgets/custom_consent.dart';
 import 'package:flutter/widgets.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:attendee/widgets/custom_snackbar.dart';
+
 
 class LocationHelper {
   StreamSubscription<Position>? _positionSub;
   StreamSubscription<ServiceStatus>? _serviceStatusSub;
 
+
+  final CustomConsentBox _customAlert = CustomConsentBox();
+
+
+
   Future<Position?> getCurrentPosition(BuildContext context) async {
+
+    bool consent = await _showDisclosureDialog(context);
+    if (!consent) return null;
 
     ///Check location service isEnable or not
     if (!await Geolocator.isLocationServiceEnabled()) {
@@ -68,6 +79,33 @@ class LocationHelper {
     return null;
   }
 
+
+
+// user consent dialog box
+  Future<bool> _showDisclosureDialog(BuildContext context) async {
+    final completer = Completer<bool>();
+
+    _customAlert.showCustomConsentAlert(
+      context: context,
+      title: 'Allow Background Location Access',
+      label:
+      'We need your permission to access location in the background so we can track attendance when you enter or leave the office. Your data is secure and private.',
+      onResult: (result) => completer.complete(result),
+    );
+
+    return completer.future;
+  }
+
+
+
+
+
+
+
+
+
+
+
   /// Start continuous tracking.
   void startTracking({
     required void Function(Position) onData,
@@ -113,4 +151,10 @@ class LocationHelper {
     _positionSub = null;
     _serviceStatusSub = null;
   }
+
+
+
+
+
+
 }

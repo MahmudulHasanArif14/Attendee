@@ -13,6 +13,7 @@ import 'package:swipeable_button_view/swipeable_button_view.dart';
 import '../database/database_helper.dart';
 import '../provider/profile_image_provider.dart';
 import '../widgets/custom_attendance_card.dart';
+import 'activity_page.dart';
 import 'notification_page.dart';
 
 class Dashboard extends StatefulWidget {
@@ -27,7 +28,6 @@ class Dashboard extends StatefulWidget {
 class _DashboardState extends State<Dashboard> {
   bool isFinished = false;
   late final User userInfo;
-  bool _isLoading = true;
   DateTime today = DateTime.now().toLocal(); // Get current local time
   String fullName = "Name";
   final ScrollController _scrollController = ScrollController();
@@ -57,6 +57,7 @@ class _DashboardState extends State<Dashboard> {
       context,
       listen: false,
     ).updateUserField(key, value);
+    print("All Data UPDated");
   }
 
   ///INIT STATE
@@ -77,12 +78,20 @@ class _DashboardState extends State<Dashboard> {
 
     fullName = widget.user.userMetadata!['name'].toString().trim();
     final String phoneNumber =
-        widget.user.userMetadata!['phoneNo'].toString().trim();
+        widget.user.userMetadata!['phone'].toString().trim();
+
+    print("User PHone No is $phoneNumber");
+
+    print("usermetadata phone ${widget.user.userMetadata!['phone']}");
+
+
     _updateField(context, 'full_name', fullName);
+
+
     if (phoneNumber != 'null') {
       _updateField(context, 'phone', phoneNumber);
     }
-    _updateField(context, 'email', phoneNumber);
+    _updateField(context, 'email', widget.user.email!);
 
     // Wait until the widget is built before scrolling
     WidgetsBinding.instance.addPostFrameCallback((_) async {
@@ -98,7 +107,6 @@ class _DashboardState extends State<Dashboard> {
 
   Future<void> _fetchInitialData() async {
     try {
-      setState(() => _isLoading = true);
 
       final today = DateTime.now().toUtc();
       final todayDate = DateFormat('yyyy-MM-dd').format(today);
@@ -166,7 +174,6 @@ class _DashboardState extends State<Dashboard> {
         CustomSnackbar.show(context: context, label: "Failed to load data :$e");
       }
     } finally {
-      setState(() => _isLoading = false);
     }
   }
 
@@ -354,23 +361,20 @@ class _DashboardState extends State<Dashboard> {
                                 borderRadius: BorderRadius.circular(50),
                                 color: Colors.transparent,
                               ),
-                              child: Hero(
-                                tag: "View All",
-                                child: IconButton(
-                                  icon: Icon(
-                                    Icons.notifications_none_rounded,
-                                    size: isSmallScreen ? 24 : 26,
-                                  ),
-                                  onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder:
-                                            (context) => NotificationScreen(),
-                                      ),
-                                    );
-                                  },
+                              child: IconButton(
+                                icon: Icon(
+                                  Icons.notifications_none_rounded,
+                                  size: isSmallScreen ? 24 : 26,
                                 ),
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder:
+                                          (context) => NotificationScreen(),
+                                    ),
+                                  );
+                                },
                               ),
                             ),
                           ],
@@ -563,19 +567,16 @@ class _DashboardState extends State<Dashboard> {
                                     context,
                                     MaterialPageRoute(
                                       builder:
-                                          (context) => NotificationScreen(),
+                                          (context) => ActivityPage(),
                                     ),
                                   );
                                 },
-                                child: Hero(
-                                  tag: "View All",
-                                  child: Text(
-                                    "View All",
-                                    style: TextStyle(
-                                      fontSize: isSmallScreen ? 12 : 14,
-                                      fontWeight: FontWeight.w600,
-                                      color: Color(0xff2e79e3),
-                                    ),
+                                child: Text(
+                                  "View All",
+                                  style: TextStyle(
+                                    fontSize: isSmallScreen ? 12 : 14,
+                                    fontWeight: FontWeight.w600,
+                                    color: Color(0xff2e79e3),
                                   ),
                                 ),
                               ),
@@ -617,7 +618,7 @@ class _DashboardState extends State<Dashboard> {
 
                               return // ListView
                               SizedBox(
-                                height: size.height * 0.1,
+                                height: size.height * 0.08,
                                 child: ListView.builder(
                                   itemCount: activityList.length,
                                   itemBuilder: (context, index) {
@@ -716,7 +717,7 @@ class _DashboardState extends State<Dashboard> {
                               );
                             },
                           ),
-                          SizedBox(height: isSmallScreen ? 8 : 16),
+                          SizedBox(height: isSmallScreen ? 4 : 5),
                           //  Swipe Button Positioning
                           Padding(
                             padding: EdgeInsets.symmetric(

@@ -7,11 +7,14 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
+import '../model/app_notification_model.dart';
+import '../provider/notification_provider.dart';
+
 class NotificationServices {
   FirebaseMessaging messaging = FirebaseMessaging.instance;
   final FlutterLocalNotificationsPlugin localPlugin = FlutterLocalNotificationsPlugin();
 
-  // Call this once in your main.dart or initState
+  ///Initialization of everything
   Future<void> initNotificationService(BuildContext context) async {
     await Firebase.initializeApp();
     await requestUserPermission();
@@ -41,6 +44,7 @@ class NotificationServices {
     } else if (settings.authorizationStatus == AuthorizationStatus.provisional) {
       if (kDebugMode) print("Provisional Permission Granted");
     } else {
+      ///If user don't give the permission then will open notification setting
       Future.delayed(Duration(seconds: 2), () {
         AppSettings.openAppSettings(type: AppSettingsType.notification);
       });
@@ -68,6 +72,7 @@ class NotificationServices {
 
     await localPlugin.initialize(
       initSettings,
+      ///after clicking on notification it will open the app
       onDidReceiveNotificationResponse: (NotificationResponse details) {
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => Splashscreen()));
       },
@@ -175,8 +180,14 @@ class NotificationServices {
   Future<void> showManualNotification({
     required String title,
     required String body,
+    required NotificationProvider provider,
   }) async {
 
+    provider.addNotification(AppNotification(
+      title: title,
+      body: body,
+      timestamp: DateTime.now(),
+    ));
 
     const AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
       'manual_channel',

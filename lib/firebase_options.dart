@@ -42,17 +42,17 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions web = FirebaseOptions(
     apiKey: 'AIzaSyDph93_h0bDU2qz0oFRlt9h_nF_jM55mjE',
-    appId: '1:1086961716031:web:1dddd781c9895a9fb9218a',
+    appId: '1:1086961716031:web:a3f55b78be7eef97b9218a',
     messagingSenderId: '1086961716031',
     projectId: 'attendee-cedc2',
     authDomain: 'attendee-cedc2.firebaseapp.com',
     storageBucket: 'attendee-cedc2.firebasestorage.app',
-    measurementId: 'G-3KSSQX0SEP',
+    measurementId: 'G-S8ZKKL5VSD',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyCQOtXEbH62IDkAmrX-bmjTRzakXGlu370',
-    appId: '1:1086961716031:android:2d86cae4185db244b9218a',
+    appId: '1:1086961716031:android:0496b99d6aa38e45b9218a',
     messagingSenderId: '1086961716031',
     projectId: 'attendee-cedc2',
     storageBucket: 'attendee-cedc2.firebasestorage.app',
@@ -60,11 +60,13 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyCEhbFuVKobwGrG-bXMqfpAaX9mPDDTaoQ',
-    appId: '1:1086961716031:ios:64172ab038a7190fb9218a',
+    appId: '1:1086961716031:ios:71052e1f9de90262b9218a',
     messagingSenderId: '1086961716031',
     projectId: 'attendee-cedc2',
     storageBucket: 'attendee-cedc2.firebasestorage.app',
-    iosBundleId: 'com.example.attendee',
+    androidClientId: '1086961716031-3i3473uukdukgdbfrhfrdmorshahp9k5.apps.googleusercontent.com',
+    iosClientId: '1086961716031-rb3fiiso5bv1954iqaccroagd58h6rsk.apps.googleusercontent.com',
+    iosBundleId: 'com.westerncars.attendee',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(

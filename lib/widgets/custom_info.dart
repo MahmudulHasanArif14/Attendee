@@ -65,12 +65,7 @@ class _InfoTileState extends State<InfoTile> {
     });
   }
 
-  @override
-  void dispose() {
-    _controller.dispose();
-    _focusNode.dispose();
-    super.dispose();
-  }
+
 
   void _toggleEditing() {
     setState(() {
@@ -132,7 +127,7 @@ class _InfoTileState extends State<InfoTile> {
         years -= 1;
         months += 12;
       }
-      await _updateField('company_experience','$years Years $months Months $days Days');
+       _updateField('company_experience','$years Years $months Months $days Days');
       widget.onFocusChange?.call(false);
     }
 
@@ -140,6 +135,8 @@ class _InfoTileState extends State<InfoTile> {
 
 
   }
+
+
 
 
 
@@ -152,39 +149,53 @@ class _InfoTileState extends State<InfoTile> {
 
   ///Time Picker For office time selecting
   Future<void> _pickOfficeTime() async {
-    TimeOfDay? start = await showTimePicker(
-      context: context,
-      helpText: "Select Your Office Start Time",
-      initialTime: TimeOfDay(hour: 4, minute: 0),
-    );
-    if (start != null) {
+    try {
+      if (!mounted) return;
+      final TimeOfDay? start = await showTimePicker(
+        context: context,
+        helpText: "Select Your Office Start Time",
+        initialTime: const TimeOfDay(hour: 4, minute: 0),
+      );
 
-      if(mounted){
-        TimeOfDay? end = await showTimePicker(
-          helpText: "Select Your Office End Time",
-          context: context,
-          initialTime: TimeOfDay(hour: start.hour + 8, minute: start.minute),
-        );
-        if (end != null && mounted) {
-          final formatted =
-              "${start.format(context)} to ${end.format(context)}";
+      if (!mounted || start == null) return;
+      final formattedStart = _formatTimeOfDay(start);
+      final TimeOfDay? end = await showTimePicker(
+        context: context,
+        helpText: "Select Your Office End Time",
+        initialTime: TimeOfDay(
+          hour: (start.hour + 8) % 24,
+          minute: start.minute,
+        ),
+      );
 
-          setState(() {
-            _controller.text = formatted;
-          });
-          widget.onChanged?.call(formatted);
+      if (!mounted || end == null) return;
 
-          //update the start time and end time to database
-          final formattedStart = _formatTimeOfDay(start);
-          await _updateField('start_time', formattedStart);
-          final formattedEnd = _formatTimeOfDay(end);
-          await _updateField('end_time', formattedEnd);
+      final formattedEnd = _formatTimeOfDay(end);
+      final formatted = "${start.format(context)} to ${end.format(context)}";
 
-          widget.onFocusChange?.call(false);
-        }
+
+
+      print(formatted);
+
+
+      if (mounted) {
+        setState(() {
+          _controller.text = formatted;
+        });
       }
+
+
+      _updateField('end_time', formattedEnd);
+      _updateField('start_time', formattedStart);
+
+
+      widget.onChanged?.call(formatted);
+      widget.onFocusChange?.call(false);
+    } catch (e) {
+      debugPrint("Error in _pickOfficeTime: $e");
     }
   }
+
 
   String _monthName(int month) {
     const months = [
@@ -203,6 +214,14 @@ class _InfoTileState extends State<InfoTile> {
     ];
     //return the index value  of the month list
     return months[month - 1];
+  }
+
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _focusNode.dispose();
+    super.dispose();
   }
 
   @override

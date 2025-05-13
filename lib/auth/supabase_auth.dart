@@ -38,17 +38,20 @@ import 'package:shared_preferences/shared_preferences.dart';
           email: email,
           password: password,
           emailRedirectTo: "io.supabase.flutterquickstart://login-callback",
-          data: {"name": name, "phoneNo": fullPhoneNumber},
+          data: {"phone": fullPhoneNumber,"name": name},
         );
+
+
 
         // If not Email Verified goto verificationPage
         if (res.user != null && res.user?.emailConfirmedAt == null) {
+
           // Navigate to Verification Page
           if (context.mounted) {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => VerificationPage(user: res.user),
+                builder: (context) => VerificationPage(user: res.user,phone: fullPhoneNumber,),
               ),
             );
           }
@@ -140,9 +143,9 @@ import 'package:shared_preferences/shared_preferences.dart';
     Future<void> loginWithGoogle(BuildContext context) async {
       try {
         const webClientId =
-            '1086961716031-h6c9n8tbunllqifs1ri12soo8kjmlo6j.apps.googleusercontent.com';
+            '1086961716031-mu5did4abp5br146us1ss84qa6ul21am.apps.googleusercontent.com';
         const iosClientId =
-            '1086961716031-9fgtutdctvskbrrdmlprgcqpc8cheiu7.apps.googleusercontent.com';
+            '1086961716031-rb3fiiso5bv1954iqaccroagd58h6rsk.apps.googleusercontent.com';
 
         final GoogleSignIn googleSignIn = GoogleSignIn(
           clientId: iosClientId,
@@ -180,13 +183,13 @@ import 'package:shared_preferences/shared_preferences.dart';
             accessToken: accessToken,
           );
           if (context.mounted) {
-            final nameStatus = response.user!.userMetadata?['name']
+            final name = response.user!.userMetadata?['name']
                 .toString()
                 .trim()
                 .split(' ');
             String? lastName =
-                nameStatus!.isNotEmpty
-                    ? nameStatus.last
+                name!.isNotEmpty
+                    ? name.last
                     : response.session?.user.email?.split('@').first;
 
             CustomAlertBox().showCustomAnimatedAlert(
@@ -242,7 +245,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
         final _ = await supabaseInstance.auth.resetPasswordForEmail(
             email,
-          redirectTo: 'com.example.attendee://reset-password',
+          redirectTo: 'com.westerncars.attendee://reset-password',
         );
         resetSend++;
 

@@ -10,7 +10,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.attendee"
+    namespace = "com.westerncars.attendee"
     compileSdk = 35
     ndkVersion = "27.0.12077973"
 
@@ -22,13 +22,23 @@ android {
 
     }
 
+    signingConfigs {
+        create("release") {
+            storeFile = file("key.jks")
+            storePassword = "MdhA@2025_Key!"
+            keyAlias = "upload"
+            keyPassword = "MdhA@2025_Key!"
+        }
+    }
+
+
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_11.toString()
     }
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.example.attendee"
+        applicationId = "com.westerncars.attendee"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         // Example of dynamically converting a value
@@ -41,17 +51,22 @@ android {
         targetSdk = 34
 
 
-        versionCode = flutter.versionCode
-        versionName = flutter.versionName
+        versionCode = 4
+        versionName = "1.0.3"
     }
 
     buildTypes {
-        release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.getByName("debug")
+        getByName("release") {
+            signingConfig = signingConfigs.getByName("release")
+            isMinifyEnabled = false
+            isShrinkResources = false
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
     }
+
     buildToolsVersion = "36.0.0"
 }
 

@@ -68,6 +68,10 @@
             </dict>
           </array>
 
+            <key>LSApplicationQueriesSchemes</key>
+            <array>
+              <string>tel</string>
+            </array>
 
           <!-- Google Sign-in Section -->
           <key>CFBundleURLTypes</key>
@@ -79,7 +83,7 @@
           		<array>
           			<!-- TODO Replace this value: -->
           			<!-- Copied from GoogleService-Info.plist key REVERSED_CLIENT_ID -->
-          			<string>com.googleusercontent.apps.1086961716031-9fgtutdctvskbrrdmlprgcqpc8cheiu7</string>
+          			<string>1086961716031-rb3fiiso5bv1954iqaccroagd58h6rsk</string>
           		</array>
           	</dict>
           </array>

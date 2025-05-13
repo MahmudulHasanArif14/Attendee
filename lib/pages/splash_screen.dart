@@ -71,6 +71,7 @@ class SplashscreenState extends State<Splashscreen> {
         backgroundColor: Colors.transparent,
         toolbarHeight: 0,
         automaticallyImplyLeading: false,
+        forceMaterialTransparency: true,
       ),
       body: Container(
         decoration: const BoxDecoration(
