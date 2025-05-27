@@ -11,6 +11,8 @@ class CustomAlertBox {
 
   String userDesignation="";
 
+
+
   Future<bool> fetchUserDesignation(BuildContext context) async {
     await Provider.of<DatabaseHelperProvider>(
       context,
@@ -26,6 +28,7 @@ class CustomAlertBox {
         return false;
       }
       userDesignation=designation;
+      return true;
     }
     return true;
   }
@@ -164,8 +167,18 @@ class CustomAlertBox {
                                 : Text(""),
                             !res ? SizedBox(height: 10) : SizedBox(height: 0),
                             ElevatedButton(
-                              onPressed: () {
+                              onPressed: () async {
+
+
                                 //if User don't Select  Role can't back to home
+
+
+
+                                bool res=await fetchUserDesignation(context);
+
+                                print(currSelectedItem);
+                                print(userDesignation);
+
                                 if (!res &&
                                     (currSelectedItem == null ||
                                         currSelectedItem ==
@@ -179,7 +192,6 @@ class CustomAlertBox {
                                   if(userDesignation!="" || userDesignation.isNotEmpty){
 
                                     if(userDesignation=="Admin"){
-
                                       Navigator.pushAndRemoveUntil(
                                         context,
                                         MaterialPageRoute(
@@ -191,6 +203,7 @@ class CustomAlertBox {
                                       );
 
                                     }else{
+
 
                                       Navigator.pushAndRemoveUntil(
                                         context,
@@ -207,6 +220,7 @@ class CustomAlertBox {
 
 
                                   }
+
 
 
 

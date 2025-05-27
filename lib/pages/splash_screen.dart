@@ -2,7 +2,10 @@ import 'package:attendee/auth/supabase_auth.dart';
 import 'package:attendee/pages/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 
+import '../database/database_helper.dart';
+import 'admin_dashboard.dart';
 import 'dashboard.dart';
 
 
@@ -14,6 +17,28 @@ class Splashscreen extends StatefulWidget {
 }
 
 class SplashscreenState extends State<Splashscreen> {
+
+  String userDesignation="";
+  Future<bool> fetchUserDesignation(BuildContext context) async {
+    await Provider.of<DatabaseHelperProvider>(
+      context,
+      listen: false,
+    ).fetchUserProfile();
+    if (!context.mounted) return false;
+    Map<String, dynamic>? profile =
+        Provider.of<DatabaseHelperProvider>(context, listen: false).profile;
+
+    if (profile != null &&  profile.isNotEmpty) {
+      final designation = profile['designation'].toString().trim();
+      if (designation == "" || designation.isEmpty) {
+        return false;
+      }
+      userDesignation=designation;
+      return true;
+    }
+    return true;
+  }
+
 
 
   @override
@@ -38,12 +63,22 @@ class SplashscreenState extends State<Splashscreen> {
   void _navigateToLoginPage() async {
     await Future.delayed(const Duration(seconds: 1));
     if (!mounted) return;
+    
+    bool isDesignationFound=await fetchUserDesignation(context);
 
     final bool isLoggedIn = OauthHelper.isUserLoggedIn();
-    final Widget destination = isLoggedIn
-        ? HomePage(user: OauthHelper.currentUser())
-        : const LoginPage();
 
+    late final Widget destination;
+
+    if (!isLoggedIn) {
+      destination = const LoginPage();
+    } else if (isDesignationFound && userDesignation == "Admin") {
+      destination = AdminDashboard(user: OauthHelper.currentUser());
+    } else {
+      destination = HomePage(user: OauthHelper.currentUser());
+    }
+
+    if(!mounted) return;
     Navigator.pushReplacement(
       context,
       PageRouteBuilder(
